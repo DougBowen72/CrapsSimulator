@@ -1,0 +1,24 @@
+<div style="color: red;">{{ error }}</div>
+<label for="strategies">Choose a strategy: </label>
+<select id="strategies" [(ngModel)]="selectedStrategy">
+  <option *ngFor="let strategy of strategies" value="{{ strategy.id }}">{{ strategy.description }}</option>
+</select>
+<br/>
+<br/>
+<div>
+    <label for="shooters">Number of shooters: </label>
+    <input type="number" id="shooters" [(ngModel)]="shooters"/>
+</div>
+<br/>
+<div>
+    <label for="bettingUnit">Betting Unit: </label>
+    <input type="number" id="bettingUnit" [(ngModel)]="bettingUnit"/>
+</div>
+<br/>
+<br/>
+<button (click)="runStrategy()">Run Simulation</button>
+<br/>
+<div *ngIf="isRunning">Executing simulation please wait...</div>
+<br/>
+<!-- <div *ngFor="let s of output.slice().reverse()">{{ s }}</div> -->
+<div [ngStyle]="{'color': s.color }" *ngFor="let s of output.slice().reverse()">{{ s.text }}</div>
