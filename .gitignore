@@ -1,2 +1,3 @@
 # List folders and files to be ignored by GIT
 node_modules/
+.angular/
