@@ -66,6 +66,7 @@ export class ColdTable {
             let point: number = 0;
 
             this._unitsOnHand = this._maxBettingUnitsPerShooter;
+            this._output({text: `Units on hand: ${this._unitsOnHand}`, color: 'black'});
 
             while (sevenOut === false) {
                 //output(`Units on hand: ${this._unitsOnHand}`, color: 'black'});

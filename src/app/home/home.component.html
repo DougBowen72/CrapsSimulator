@@ -1,9 +1,11 @@
 <div style="color: red;">{{ error }}</div>
 <label for="strategies">Choose a strategy: </label>
 <select id="strategies" [(ngModel)]="selectedStrategy">
-  <option *ngFor="let strategy of strategies" value="{{ strategy.id }}">{{ strategy.description }}</option>
+  <option *ngFor="let strategy of strategies" value="{{ strategy.id }}">{{ strategy.name }}</option>
 </select>
 <br/>
+<br *ngIf="getSelectedStrategyDescription().length > 0"/>
+<div *ngIf="getSelectedStrategyDescription().length > 0">Strategy description: {{ getSelectedStrategyDescription() }}</div>
 <br/>
 <div>
     <label for="shooters">Number of shooters: </label>

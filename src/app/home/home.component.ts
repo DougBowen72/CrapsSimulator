@@ -25,7 +25,8 @@ export class HomeComponent {
     this.strategies = [
       {
         id: 1,
-        description: 'Cold Table'
+        name: 'Cold Table',
+        description: `Max 4 units per shooter, don't pass, come, come, don't come, don't come (if enough units, max 2 don't come bets)`
       }//,
       // {
       //   id: 2,
@@ -34,6 +35,16 @@ export class HomeComponent {
     ];
 
     //this.op.push({"text": "test", "css": "red"});
+  }
+
+  public getSelectedStrategyDescription(): string {
+    if (this.selectedStrategy > 0) {
+      return this.strategies.filter(s => s.id == this.selectedStrategy)[0].description;
+    }
+    else {
+      return '';
+    }
+    
   }
 
   public async runStrategy() {
