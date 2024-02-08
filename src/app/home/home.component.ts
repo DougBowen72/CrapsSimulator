@@ -26,11 +26,11 @@ export class HomeComponent {
       {
         id: 1,
         description: 'Cold Table'
-      },
-      {
-        id: 2,
-        description: '6 and 8'
-      }
+      }//,
+      // {
+      //   id: 2,
+      //   description: '6 and 8'
+      // }
     ];
 
     //this.op.push({"text": "test", "css": "red"});
