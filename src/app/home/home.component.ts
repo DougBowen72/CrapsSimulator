@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { IStrategy } from './strategy.model';
 import { FormsModule } from '@angular/forms';
 import { ColdTable } from './coldTable.model';
+import { SixAndEight } from './sixAndEight.model';
 
 @Component({
   selector: 'craps-home',
@@ -27,14 +28,13 @@ export class HomeComponent {
         id: 1,
         name: 'Cold Table',
         description: `Max 4 units per shooter, don't pass, come, come, don't come, don't come (if enough units, max 2 don't come bets)`
-      }//,
-      // {
-      //   id: 2,
-      //   description: '6 and 8'
-      // }
+      },
+      {
+        id: 2,
+        name: '6 and 8',
+        description: `Place 6 and 8, collect two hits, third hit place 5, 4th hit collect, 5th hit place 9, then collect all`
+      }
     ];
-
-    //this.op.push({"text": "test", "css": "red"});
   }
 
   public getSelectedStrategyDescription(): string {
@@ -58,15 +58,20 @@ export class HomeComponent {
     this.output.length = 0;
     await this.sleep(25);
 
-    if (this.selectedStrategy == 1) {
-      let coldTable = new ColdTable();
+    let fn = (s: {text: string, color: string}) => {
+      this.output.push({text: s.text, color: s.color});
+      console.info(s.text);
+    }
 
-      let fn = (s: {text: string, color: string}) => {
-        this.output.push({text: s.text, color: s.color});
-        console.info(s.text);
-      }
+    if (this.selectedStrategy == 1) {
+      let coldTable: ColdTable = new ColdTable();
 
       coldTable.runSimulation(this.bettingUnit, this.shooters, fn);
+    }
+    else if (this.selectedStrategy == 2) {
+      let sixAndEight: SixAndEight = new SixAndEight();
+
+      sixAndEight.runSimulation(this.bettingUnit, this.shooters, fn);
     }
     else {
       this.error = 'Strategy not implemented';

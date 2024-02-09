@@ -1,4 +1,5 @@
 import { min } from "rxjs";
+import { Common } from "./common.model";
 
 export class ColdTable {
     private _amountOnDontPass: number = 0;
@@ -107,7 +108,7 @@ export class ColdTable {
 
                 if (isComeout) { output({text: `Coming out...`, color: 'black'}); }
                 output({text: 'Rolling...', color: 'black'});
-                let dice = this.rollDice();
+                let dice = Common.rollDice();
                 output({text: `${dice} rolled`, color: 'black'});
 
                 switch (dice) {
@@ -524,13 +525,6 @@ export class ColdTable {
         }
     }
 
-    private rollDice() : number {
-        // Can't simply take a random number between 2 and 12 because that would make all numbers equally
-        // likely to occur.
-        let die1 = Math.floor(Math.random() * 6 + 1);
-        let die2 = Math.floor(Math.random() * 6 + 1);
-        return die1 + die2;
-    }
 
     private totalAmountOnDontComeBets() : number {
         let total = 0;
