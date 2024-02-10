@@ -1,7 +1,7 @@
 import { min } from "rxjs";
 import { Common } from "./common.model";
 
-export class ColdTable {
+export class ModifiedColdTable {
     private _amountOnDontPass: number = 0;
     private _amountOnDontCome: number = 0;
     private _amountOnCome: number = 0;
@@ -52,7 +52,7 @@ export class ColdTable {
 
     
     public runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void) {
-        output({text: 'Starting simulation for cold table strategy...', color: 'black'});
+        output({text: 'Starting simulation for Modified Cold Table strategy...', color: 'black'});
 
         let isComeout: boolean = true;
         let maxDontComeBets: number = 2;
@@ -80,14 +80,8 @@ export class ColdTable {
                     }
                 }
                 else {
-                    // We want no more than 2 don't come bets set
-                    if (this.totalAmountOnDontComeBets() === bettingUnit * maxDontComeBets) {
-                        // Don't do anything, just roll
-                        output({text: `Max don't come bets in place, just rolling`, color: 'black'});
-                    }
                     // See if we should put a unit on the come
-                    else if (this.totalAmountOnDontComeBets() == 0
-                            && this.totalAmountOnComeBets() < bettingUnit * maxComeBets
+                    if (this.totalAmountOnComeBets() < bettingUnit * maxComeBets
                             && this._unitsOnHand > 0) {
                         output({text: 'Placing bet on come', color: 'black'});
                         this._amountOnCome = bettingUnit;
@@ -95,10 +89,7 @@ export class ColdTable {
                     }
                     // See if we should put a unit on the don't come.
                     // We know we're not putting a unit on the come.
-                    // We know we're not at max don't come bets as it was checked above.
-                    // The idea here is that once you go dark, stay dark
-                    else if ((this.totalAmountOnDontComeBets() > 0
-                            || this.totalAmountOnComeBets() === bettingUnit * maxComeBets)
+                    else if (this.totalAmountOnDontComeBets() <= bettingUnit * maxDontComeBets
                             && this._unitsOnHand > 0) {
                         output({text: `Placing bet on don't come`, color: 'black'});
                         this._amountOnDontCome = bettingUnit;

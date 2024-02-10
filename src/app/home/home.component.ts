@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ColdTable } from './coldTable.model';
 import { SixAndEight } from './sixAndEight.model';
 import { PassLineOnly } from './passLineOnly.model';
+import { ModifiedColdTable } from './modifiedColdTable.model';
 
 @Component({
   selector: 'craps-home',
@@ -29,7 +30,7 @@ export class HomeComponent {
       {
         id: 1,
         name: 'Cold Table',
-        description: `Max 4 units per shooter, don't pass, come, come, don't come, don't come (if enough units, max 2 don't come bets)`
+        description: `Max 4 units per shooter, don't pass, come, come, don't come, don't come (if enough units, max 2 don't come bets). Once you go dark stay dark. If any don't come bets are in place, no more come bets.`
       },
       {
         id: 2,
@@ -40,6 +41,11 @@ export class HomeComponent {
         id: 3,
         name: 'Pass line only',
         description: `Pass line only with an odds multiple`
+      },
+      {
+        id: 4,
+        name: 'Modified Cold Table',
+        description: `Same as Cold Table but keep trying to get 2 come bets even if two don't comes are in place.`
       }
     ];
   }
@@ -80,9 +86,13 @@ export class HomeComponent {
           sixAndEight.runSimulation(this.bettingUnit, this.shooters, output);
           break;
       case 3:
-        let passLineOnly: PassLineOnly = new PassLineOnly();
-        passLineOnly.runSimulation(this.bettingUnit, this.shooters, this.oddsMultipe, output)
-        break;
+          let passLineOnly: PassLineOnly = new PassLineOnly();
+          passLineOnly.runSimulation(this.bettingUnit, this.shooters, this.oddsMultipe, output)
+          break;
+      case 4:
+          let modifiedColdTable: ModifiedColdTable = new ModifiedColdTable();
+          modifiedColdTable.runSimulation(this.bettingUnit, this.shooters, output)
+          break;
       default:
         this.error = 'Strategy not implemented';
     }
