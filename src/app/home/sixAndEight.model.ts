@@ -7,8 +7,7 @@ export class SixAndEight {
     private _amountOn9: number = 0;
     private _maxBankrollRelativeToZero: number = 0;
     private _minBankrollRelativeToZero: number = 0;
-    private _bettingUnit: number = 0;
-    private _output: Function = () => {};
+    //private _output: Function = () => {};
     private _numHits: number = 0;
 
     private get numHits() {
@@ -52,7 +51,7 @@ export class SixAndEight {
         output({text: 'Starting simulation for 6 and 8 strategy...', color: 'black'});
 
         let isComeout: boolean = true;
-        this._output = output;
+        //this._output = output;
 
         for (let i: number = 0; i < shooters; i++)
         {
@@ -97,7 +96,7 @@ export class SixAndEight {
 
                 // Roll the dice
                 if (isComeout) { output({text: `Coming out...`, color: 'black'}); }
-                output({text: 'Rolling...', color: 'black'});
+                //output({text: 'Rolling...', color: 'black'});
                 let dice = Common.rollDice();
                 output({text: `${dice} rolled`, color: 'black'});
 

@@ -4,6 +4,7 @@ import { IStrategy } from './strategy.model';
 import { FormsModule } from '@angular/forms';
 import { ColdTable } from './coldTable.model';
 import { SixAndEight } from './sixAndEight.model';
+import { PassLineOnly } from './passLineOnly.model';
 
 @Component({
   selector: 'craps-home',
@@ -21,6 +22,7 @@ export class HomeComponent {
   public bettingUnit: number = 0;
   public output: {text: string, color: string}[] = [];
   public isRunning: boolean = false;
+  public oddsMultipe: number = 0;
   
   constructor() {
     this.strategies = [
@@ -33,6 +35,11 @@ export class HomeComponent {
         id: 2,
         name: '6 and 8',
         description: `Place 6 and 8, collect two hits, third hit place 5, 4th hit collect, 5th hit place 9, then collect all`
+      },
+      {
+        id: 3,
+        name: 'Pass line only',
+        description: `Pass line only with an odds multiple`
       }
     ];
   }
@@ -58,24 +65,28 @@ export class HomeComponent {
     this.output.length = 0;
     await this.sleep(25);
 
-    let fn = (s: {text: string, color: string}) => {
+    let output = (s: {text: string, color: string}) => {
       this.output.push({text: s.text, color: s.color});
       console.info(s.text);
     }
 
-    if (this.selectedStrategy == 1) {
-      let coldTable: ColdTable = new ColdTable();
+    switch (this.selectedStrategy) {
+      case 1:
+          let coldTable: ColdTable = new ColdTable();
+          coldTable.runSimulation(this.bettingUnit, this.shooters, output);
+          break;
+      case 2:
+          let sixAndEight: SixAndEight = new SixAndEight();
+          sixAndEight.runSimulation(this.bettingUnit, this.shooters, output);
+          break;
+      case 3:
+        let passLineOnly: PassLineOnly = new PassLineOnly();
+        passLineOnly.runSimulation(this.bettingUnit, this.shooters, this.oddsMultipe, output)
+        break;
+      default:
+        this.error = 'Strategy not implemented';
+    }
 
-      coldTable.runSimulation(this.bettingUnit, this.shooters, fn);
-    }
-    else if (this.selectedStrategy == 2) {
-      let sixAndEight: SixAndEight = new SixAndEight();
-
-      sixAndEight.runSimulation(this.bettingUnit, this.shooters, fn);
-    }
-    else {
-      this.error = 'Strategy not implemented';
-    }
     this.isRunning = false;
     await this.sleep(1);
   }

@@ -1,7 +1,7 @@
 <div style="color: red;">{{ error }}</div>
 <label for="strategies">Choose a strategy: </label>
 <select id="strategies" [(ngModel)]="selectedStrategy">
-  <option *ngFor="let strategy of strategies" value="{{ strategy.id }}">{{ strategy.name }}</option>
+  <option *ngFor="let strategy of strategies" [ngValue]="strategy.id">{{ strategy.name }}</option>
 </select>
 <br/>
 <br *ngIf="getSelectedStrategyDescription().length > 0"/>
@@ -13,8 +13,13 @@
 </div>
 <br/>
 <div>
-    <label for="bettingUnit">Betting Unit: </label>
-    <input type="number" id="bettingUnit" [(ngModel)]="bettingUnit"/>
+  <label for="bettingUnit">Betting unit: </label>
+  <input type="number" id="bettingUnit" [(ngModel)]="bettingUnit"/>
+</div>
+<br *ngIf="selectedStrategy === 3"/>
+<div *ngIf="selectedStrategy === 3">
+  <label for="oddsMultiple">Odds multiple: </label>
+  <input type="number" id="oddsMultiple" [(ngModel)]="oddsMultipe"/>
 </div>
 <br/>
 <br/>

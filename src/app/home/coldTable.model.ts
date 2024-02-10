@@ -107,7 +107,7 @@ export class ColdTable {
                 }
 
                 if (isComeout) { output({text: `Coming out...`, color: 'black'}); }
-                output({text: 'Rolling...', color: 'black'});
+                //output({text: 'Rolling...', color: 'black'});
                 let dice = Common.rollDice();
                 output({text: `${dice} rolled`, color: 'black'});
 
