@@ -18,8 +18,8 @@ export class HomeComponent {
 
   public strategies: IStrategy[];
   public error: string = '';
-  public shooters: number = 5;
-  public selectedStrategy: number = 3;
+  public shooters: number = 0;
+  public selectedStrategy: number = 0;
   public bettingUnit: number = 10;
   public output: {text: string, color: string}[] = [];
   public isRunning: boolean = false;
