@@ -18,12 +18,13 @@ export class HomeComponent {
 
   public strategies: IStrategy[];
   public error: string = '';
-  public shooters: number = 0;
-  public selectedStrategy: number = 0;
-  public bettingUnit: number = 0;
+  public shooters: number = 5;
+  public selectedStrategy: number = 3;
+  public bettingUnit: number = 10;
   public output: {text: string, color: string}[] = [];
   public isRunning: boolean = false;
-  public oddsMultipe: number = 0;
+  public oddsMultipe: number = 1;
+  public maxComeBets: number = 3;
   
   constructor() {
     this.strategies = [
@@ -34,18 +35,23 @@ export class HomeComponent {
       },
       {
         id: 2,
-        name: '6 and 8',
+        name: '6 and 8, build to 5 and 9',
         description: `Place 6 and 8, collect two hits, third hit place 5, 4th hit collect, 5th hit place 9, then collect all`
       },
       {
         id: 3,
-        name: 'Pass line only',
-        description: `Pass line only with an odds multiple`
+        name: 'Pass line',
+        description: `Pass line and come bets with an odds multiple`
       },
       {
         id: 4,
         name: 'Modified Cold Table',
-        description: `Same as Cold Table but keep trying to get 2 come bets even if two don't comes are in place.`
+        description: `Same as Cold Table but keep trying to get 2 come bets even if two don't comes are in place`
+      },
+      {
+        id: 5,
+        name: 'Place 6 and 8 only',
+        description: `Same as Cold Table but keep trying to get 2 come bets even if two don't comes are in place`
       }
     ];
   }
@@ -87,7 +93,7 @@ export class HomeComponent {
           break;
       case 3:
           let passLineOnly: PassLineOnly = new PassLineOnly();
-          passLineOnly.runSimulation(this.bettingUnit, this.shooters, this.oddsMultipe, output)
+          passLineOnly.runSimulation(this.bettingUnit, this.shooters, this.oddsMultipe, this.maxComeBets, output)
           break;
       case 4:
           let modifiedColdTable: ModifiedColdTable = new ModifiedColdTable();
