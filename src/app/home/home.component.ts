@@ -6,6 +6,7 @@ import { ColdTable } from './coldTable.model';
 import { SixAndEight } from './sixAndEight.model';
 import { PassLineOnly } from './passLineOnly.model';
 import { ModifiedColdTable } from './modifiedColdTable.model';
+import { SixAndEightOnly } from './sixAndEightOnly.model';
 
 @Component({
   selector: 'craps-home',
@@ -98,6 +99,10 @@ export class HomeComponent {
       case 4:
           let modifiedColdTable: ModifiedColdTable = new ModifiedColdTable();
           modifiedColdTable.runSimulation(this.bettingUnit, this.shooters, output)
+          break;
+      case 5:
+          let sixAndEightOnly: SixAndEightOnly = new SixAndEightOnly();
+          sixAndEightOnly.runSimulation(this.bettingUnit, this.shooters, output)
           break;
       default:
         this.error = 'Strategy not implemented';
