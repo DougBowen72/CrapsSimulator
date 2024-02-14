@@ -16,12 +16,14 @@
   <label for="bettingUnit">Betting unit: </label>
   <input type="number" id="bettingUnit" [(ngModel)]="bettingUnit"/>
 </div>
-<br *ngIf="selectedStrategy === 3"/>
-<div *ngIf="selectedStrategy === 3">
+<br *ngIf="selectedStrategy === 3 || selectedStrategy === 7"/>
+<div *ngIf="selectedStrategy === 3 || selectedStrategy === 7">
   <label for="oddsMultiple">Odds multiple: </label>
   <input type="number" id="oddsMultiple" [(ngModel)]="oddsMultipe"/>
   <br/>
-  <br/>
+</div>
+<br *ngIf="selectedStrategy === 3"/>
+<div *ngIf="selectedStrategy === 3">
   <label for="maxComeBets">Number of come bets: </label>
   <input type="number" id="maxComeBets" [(ngModel)]="maxComeBets"/>
 </div>

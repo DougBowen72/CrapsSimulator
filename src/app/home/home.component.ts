@@ -10,6 +10,7 @@ import { SixAndEightOnly } from './sixAndEightOnly.model';
 import { ChartModule } from '@progress/kendo-angular-charts';
 import { SeriesLabels } from "@progress/kendo-angular-charts";
 import { IronCross } from './ironCross.model';
+import { Knockout } from './knockout.model';
 
 @Component({
   selector: 'craps-home',
@@ -68,6 +69,11 @@ export class HomeComponent {
         id: 6,
         name: 'Iron Cross',
         description: `After the point is established, bet one unit on the Field and place the 5, 6 and 8.`
+      },
+      {
+        id: 7,
+        name: 'Knockout',
+        description: `A "doey-don't" strategy. Passline with odds, don't pass without odds.`
       }
     ];
   }
@@ -123,6 +129,10 @@ export class HomeComponent {
       case 6:
           let ironCross: IronCross = new IronCross();
           this.winLossData = ironCross.runSimulation(this.bettingUnit, this.shooters, output)
+          break;
+      case 7:
+          let knockout: Knockout = new Knockout();
+          this.winLossData = knockout.runSimulation(this.bettingUnit, this.shooters, this.oddsMultipe, output)
           break;
       default:
         this.error = 'Strategy not implemented';
