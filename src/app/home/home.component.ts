@@ -9,6 +9,7 @@ import { ModifiedColdTable } from './modifiedColdTable.model';
 import { SixAndEightOnly } from './sixAndEightOnly.model';
 import { ChartModule } from '@progress/kendo-angular-charts';
 import { SeriesLabels } from "@progress/kendo-angular-charts";
+import { IronCross } from './ironCross.model';
 
 @Component({
   selector: 'craps-home',
@@ -61,7 +62,12 @@ export class HomeComponent {
       {
         id: 5,
         name: 'Place 6 and 8 only',
-        description: `Same as Cold Table but keep trying to get 2 come bets even if two don't comes are in place`
+        description: `Place the 6 and 8 and collect every time.`
+      },
+      {
+        id: 6,
+        name: 'Iron Cross',
+        description: `After the point is established, bet one unit on the Field and place the 5, 6 and 8.`
       }
     ];
   }
@@ -85,6 +91,7 @@ export class HomeComponent {
     this.isRunning = true;
     this.error = '';
     this.output.length = 0;
+    this.winLossData = [];
     await this.sleep(25);
 
     let output = (s: {text: string, color: string}) => {
@@ -112,6 +119,10 @@ export class HomeComponent {
       case 5:
           let sixAndEightOnly: SixAndEightOnly = new SixAndEightOnly();
           this.winLossData = sixAndEightOnly.runSimulation(this.bettingUnit, this.shooters, output)
+          break;
+      case 6:
+          let ironCross: IronCross = new IronCross();
+          this.winLossData = ironCross.runSimulation(this.bettingUnit, this.shooters, output)
           break;
       default:
         this.error = 'Strategy not implemented';
