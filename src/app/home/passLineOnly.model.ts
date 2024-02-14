@@ -39,7 +39,7 @@ export class PassLineOnly {
         }
     }
 
-    public runSimulation(bettingUnit: number, shooters: number, oddsMultiple: number, maxComeBets: number, output: (s: {text:string, color:string}) => void) {
+    public runSimulation(bettingUnit: number, shooters: number, oddsMultiple: number, maxComeBets: number, output: (s: {text:string, color:string}) => void) : number[] {
         output({text: 'Starting simulation for pass line strategy...', color: 'black'});
 
         let isComeout: boolean = true;
@@ -50,6 +50,7 @@ export class PassLineOnly {
         let oddsBet5And9: number = amountOnPassLineOdds % 2 === 0 ? oddsBet : oddsBet + 1; // When the point is 5 or 9 the odds bet must be even as it pays 3:2
         let amountOnCome: number = 0;
         let dice: number = 0;
+        let winsAndLosses: number[] = [];
 
         for (let i: number = 0; i < shooters; i++)
         {
@@ -290,6 +291,7 @@ export class PassLineOnly {
 
                             output({text: `Win/Loss for this shooter: ${ winLoss > 0 ? '+' : '' }${winLoss}`, color: 'red'});
                             output({text: `Cumulative win/loss: ${ this.currentBankrollRelativeToZero > 0 ? '+' : '' }${this.currentBankrollRelativeToZero}`, color: 'red'});
+                            winsAndLosses.push(this.currentBankrollRelativeToZero);
                         }
                         break;
                     case 8:
@@ -474,6 +476,7 @@ export class PassLineOnly {
         output({text: `Win/Loss after ALL shooters: ${ this.currentBankrollRelativeToZero > 0 ? '+' : '' }${ this.currentBankrollRelativeToZero }`, color: 'red'});
         output({text: `Max bankroll: ${ this._maxBankrollRelativeToZero > 0 ? '+' : '' }${ this._maxBankrollRelativeToZero }`, color: 'red'});
         output({text: `Min bankroll: ${ this._minBankrollRelativeToZero > 0 ? '+' : '' }${ this._minBankrollRelativeToZero }`, color: 'red'});
+        return winsAndLosses;
     }
     private totalAmountOnComeBets() : number {
         let total = 0;

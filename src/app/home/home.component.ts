@@ -7,11 +7,13 @@ import { SixAndEight } from './sixAndEight.model';
 import { PassLineOnly } from './passLineOnly.model';
 import { ModifiedColdTable } from './modifiedColdTable.model';
 import { SixAndEightOnly } from './sixAndEightOnly.model';
+import { ChartModule } from '@progress/kendo-angular-charts';
+import { SeriesLabels } from "@progress/kendo-angular-charts";
 
 @Component({
   selector: 'craps-home',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ChartModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -26,7 +28,14 @@ export class HomeComponent {
   public isRunning: boolean = false;
   public oddsMultipe: number = 1;
   public maxComeBets: number = 3;
-  
+  public winLossData: number[] = [];
+
+  public seriesLabels: SeriesLabels = {
+    visible: true, // Note that visible defaults to false
+    padding: 3,
+    font: "bold 8px Arial, sans-serif",
+  };
+
   constructor() {
     this.strategies = [
       {
@@ -86,23 +95,23 @@ export class HomeComponent {
     switch (this.selectedStrategy) {
       case 1:
           let coldTable: ColdTable = new ColdTable();
-          coldTable.runSimulation(this.bettingUnit, this.shooters, output);
+          this.winLossData = coldTable.runSimulation(this.bettingUnit, this.shooters, output);
           break;
       case 2:
           let sixAndEight: SixAndEight = new SixAndEight();
-          sixAndEight.runSimulation(this.bettingUnit, this.shooters, output);
+          this.winLossData = sixAndEight.runSimulation(this.bettingUnit, this.shooters, output);
           break;
       case 3:
           let passLineOnly: PassLineOnly = new PassLineOnly();
-          passLineOnly.runSimulation(this.bettingUnit, this.shooters, this.oddsMultipe, this.maxComeBets, output)
+          this.winLossData = passLineOnly.runSimulation(this.bettingUnit, this.shooters, this.oddsMultipe, this.maxComeBets, output)
           break;
       case 4:
           let modifiedColdTable: ModifiedColdTable = new ModifiedColdTable();
-          modifiedColdTable.runSimulation(this.bettingUnit, this.shooters, output)
+          this.winLossData = modifiedColdTable.runSimulation(this.bettingUnit, this.shooters, output)
           break;
       case 5:
           let sixAndEightOnly: SixAndEightOnly = new SixAndEightOnly();
-          sixAndEightOnly.runSimulation(this.bettingUnit, this.shooters, output)
+          this.winLossData = sixAndEightOnly.runSimulation(this.bettingUnit, this.shooters, output)
           break;
       default:
         this.error = 'Strategy not implemented';

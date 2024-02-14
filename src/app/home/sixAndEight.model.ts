@@ -47,17 +47,17 @@ export class SixAndEight {
         }
     }
 
-    public runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void) {
+    public runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void) : number[] {
         output({text: 'Starting simulation for 6 and 8 strategy...', color: 'black'});
 
         let isComeout: boolean = true;
+        let winsAndLosses: number[] = [];
         //this._output = output;
 
         for (let i: number = 0; i < shooters; i++)
         {
             let sevenOut: boolean = false;
             let point: number = 0;
-            let collect: boolean = true;
             this._bankrollPreviousShooter = this.currentBankrollRelativeToZero;
             this.numHits = 0;
 
@@ -213,6 +213,7 @@ export class SixAndEight {
 
                             output({text: `Win/Loss for this shooter: ${ winLoss > 0 ? '+' : '' }${winLoss}`, color: 'red'});
                             output({text: `Cumulative win/loss: ${ this.currentBankrollRelativeToZero > 0 ? '+' : '' }${this.currentBankrollRelativeToZero}`, color: 'red'});
+                            winsAndLosses.push(this.currentBankrollRelativeToZero);
                         }
                         break;
                     case 8:
@@ -313,6 +314,7 @@ export class SixAndEight {
         output({text: `Win/Loss after ALL shooters: ${ this.currentBankrollRelativeToZero > 0 ? '+' : '' }${ this.currentBankrollRelativeToZero }`, color: 'red'});
         output({text: `Max bankroll: ${ this._maxBankrollRelativeToZero > 0 ? '+' : '' }${ this._maxBankrollRelativeToZero }`, color: 'red'});
         output({text: `Min bankroll: ${ this._minBankrollRelativeToZero > 0 ? '+' : '' }${ this._minBankrollRelativeToZero }`, color: 'red'});
+        return winsAndLosses;
     }
 
 }

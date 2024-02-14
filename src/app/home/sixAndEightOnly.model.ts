@@ -25,10 +25,11 @@ export class SixAndEightOnly {
         }
     }
 
-    public runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void) {
+    public runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void) : number[] {
         output({text: 'Starting simulation for the place 6 and 8 only strategy...', color: 'black'});
 
         let isComeout: boolean = true;
+        let winsAndLosses: number[] = [];
         //this._output = output;
 
         for (let i: number = 0; i < shooters; i++)
@@ -138,6 +139,7 @@ export class SixAndEightOnly {
 
                             output({text: `Win/Loss for this shooter: ${ winLoss > 0 ? '+' : '' }${winLoss}`, color: 'red'});
                             output({text: `Cumulative win/loss: ${ this.currentBankrollRelativeToZero > 0 ? '+' : '' }${this.currentBankrollRelativeToZero}`, color: 'red'});
+                            winsAndLosses.push(this.currentBankrollRelativeToZero);
                         }
                         break;
                }
@@ -147,6 +149,7 @@ export class SixAndEightOnly {
         output({text: `Win/Loss after ALL shooters: ${ this.currentBankrollRelativeToZero > 0 ? '+' : '' }${ this.currentBankrollRelativeToZero }`, color: 'red'});
         output({text: `Max bankroll: ${ this._maxBankrollRelativeToZero > 0 ? '+' : '' }${ this._maxBankrollRelativeToZero }`, color: 'red'});
         output({text: `Min bankroll: ${ this._minBankrollRelativeToZero > 0 ? '+' : '' }${ this._minBankrollRelativeToZero }`, color: 'red'});
+        return winsAndLosses;
     }
 
 }

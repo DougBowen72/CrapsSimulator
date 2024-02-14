@@ -51,13 +51,14 @@ export class ModifiedColdTable {
     }
 
     
-    public runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void) {
+    public runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void) : number[] {
         output({text: 'Starting simulation for Modified Cold Table strategy...', color: 'black'});
 
         let isComeout: boolean = true;
         let maxDontComeBets: number = 2;
         let maxComeBets: number = 2;
-    
+        let winsAndLosses: number[] = [];
+
         this._bettingUnit = bettingUnit;
         this._output = output;
 
@@ -283,6 +284,7 @@ export class ModifiedColdTable {
                             let winLoss = this._unitsOnHand * bettingUnit - this._maxBettingUnitsPerShooter * bettingUnit;
                             output({text: `Win/Loss for this shooter: ${ winLoss > 0 ? '+' : '' }${winLoss}`, color: 'red'});
                             output({text: `Cumulative win/loss: ${ this.currentBankrollRelativeToZero > 0 ? '+' : '' }${this.currentBankrollRelativeToZero}`, color: 'red'});
+                            winsAndLosses.push(this.currentBankrollRelativeToZero);
                         }
                         break;
                     case 8:
@@ -443,6 +445,7 @@ export class ModifiedColdTable {
         output({text: `Win/Loss after ALL shooters: ${ this.currentBankrollRelativeToZero > 0 ? '+' : '' }${ this.currentBankrollRelativeToZero }`, color: 'red'});
         output({text: `Max bankroll: ${ this._maxBankrollRelativeToZero > 0 ? '+' : '' }${ this._maxBankrollRelativeToZero }`, color: 'red'});
         output({text: `Min bankroll: ${ this._minBankrollRelativeToZero > 0 ? '+' : '' }${ this._minBankrollRelativeToZero }`, color: 'red'});
+        return winsAndLosses;
     }
 
     private loseComeBets(output: (s: {text:string, color:string}) => void): void {
