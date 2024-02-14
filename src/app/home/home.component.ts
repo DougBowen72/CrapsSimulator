@@ -33,7 +33,7 @@ export class HomeComponent {
   public seriesLabels: SeriesLabels = {
     visible: true, // Note that visible defaults to false
     padding: 3,
-    font: "bold 8px Arial, sans-serif",
+    font: "bold 7px Arial, sans-serif",
   };
 
   constructor() {
