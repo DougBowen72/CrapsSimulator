@@ -11,6 +11,8 @@ import { ChartModule } from '@progress/kendo-angular-charts';
 import { SeriesLabels } from "@progress/kendo-angular-charts";
 import { IronCross } from './ironCross.model';
 import { Knockout } from './knockout.model';
+import { PassLineWithSixAndEight } from './passlineWithSixAndEight.model';
+import { ChoppyTable } from './choppyTable.model';
 
 @Component({
   selector: 'craps-home',
@@ -74,6 +76,16 @@ export class HomeComponent {
         id: 7,
         name: 'Knockout',
         description: `A "doey-don't" strategy. Passline with odds, don't pass without odds.`
+      },
+      {
+        id: 8,
+        name: 'Pass line with 6 and 8',
+        description: `Passline with odds and place the 6 and 8 (or 5 or 9 if the point is 6 or 8)`
+      },
+      {
+        id: 9,
+        name: 'Choppy table',
+        description: `Don't pass, don't come, 2 units on come`
       }
     ];
   }
@@ -133,6 +145,14 @@ export class HomeComponent {
       case 7:
           let knockout: Knockout = new Knockout();
           this.winLossData = knockout.runSimulation(this.bettingUnit, this.shooters, this.oddsMultipe, output)
+          break;
+      case 8:
+          let passWith6And8: PassLineWithSixAndEight = new PassLineWithSixAndEight();
+          this.winLossData = passWith6And8.runSimulation(this.bettingUnit, this.shooters, this.oddsMultipe, output)
+          break;
+      case 9:
+          let choppy: ChoppyTable = new ChoppyTable();
+          this.winLossData = choppy.runSimulation(this.bettingUnit, this.shooters, output)
           break;
       default:
         this.error = 'Strategy not implemented';

@@ -74,7 +74,7 @@ export class ModifiedColdTable {
                 //output(`Units on hand: ${this._unitsOnHand}`, color: 'black'});
 
                 if (isComeout) {
-                    if (this._unitsOnHand > 0) {
+                    if (this._unitsOnHand > 0 && this._amountOnDontPass < 1) { // If a 12 rolled previously we'd still be on comeout but the 12 is a push so there'd already be money on the don't pass.) {
                         output({text: `Placing bet on don't pass`, color: 'black'});
                         this._amountOnDontPass = bettingUnit;
                         this.currentBankrollRelativeToZero -= bettingUnit;
@@ -90,7 +90,7 @@ export class ModifiedColdTable {
                     }
                     // See if we should put a unit on the don't come.
                     // We know we're not putting a unit on the come.
-                    else if (this.totalAmountOnDontComeBets() <= bettingUnit * maxDontComeBets
+                    else if (this.totalAmountOnDontComeBets() < bettingUnit * maxDontComeBets
                             && this._unitsOnHand > 0) {
                         output({text: `Placing bet on don't come`, color: 'black'});
                         this._amountOnDontCome = bettingUnit;
@@ -277,13 +277,20 @@ export class ModifiedColdTable {
                             if (this._amountOnCome > 0) {
                                 this.currentBankrollRelativeToZero += bettingUnit * 2;
                                 output({text: `Won on come bet`, color: 'black'});
+                                this._amountOnCome = 0;
                             }
+
+                            if (this._amountOnDontCome > 0) {
+                                output({text: `Lost the don't come`, color: 'black'});
+                                this._amountOnDontCome = 0;
+                            }
+
                             output({text: 'Seven out', color: 'black'});
                             sevenOut = true;  // Move on to the next shooter.
                             isComeout = true;
                             let winLoss = this._unitsOnHand * bettingUnit - this._maxBettingUnitsPerShooter * bettingUnit;
-                            output({text: `Win/Loss for this shooter: ${ winLoss > 0 ? '+' : '' }${winLoss}`, color: 'red'});
-                            output({text: `Cumulative win/loss: ${ this.currentBankrollRelativeToZero > 0 ? '+' : '' }${this.currentBankrollRelativeToZero}`, color: 'red'});
+                            output({text: `Win/Loss for this shooter: $${ winLoss > 0 ? '+' : '' }${winLoss}`, color: 'red'});
+                            output({text: `Cumulative win/loss: $${ this.currentBankrollRelativeToZero > 0 ? '+' : '' }${this.currentBankrollRelativeToZero}`, color: 'red'});
                             winsAndLosses.push(this.currentBankrollRelativeToZero);
                         }
                         break;
@@ -442,9 +449,9 @@ export class ModifiedColdTable {
             }
         }
 
-        output({text: `Win/Loss after ALL shooters: ${ this.currentBankrollRelativeToZero > 0 ? '+' : '' }${ this.currentBankrollRelativeToZero }`, color: 'red'});
-        output({text: `Max bankroll: ${ this._maxBankrollRelativeToZero > 0 ? '+' : '' }${ this._maxBankrollRelativeToZero }`, color: 'red'});
-        output({text: `Min bankroll: ${ this._minBankrollRelativeToZero > 0 ? '+' : '' }${ this._minBankrollRelativeToZero }`, color: 'red'});
+        output({text: `Win/Loss after ALL shooters: $${ this.currentBankrollRelativeToZero > 0 ? '+' : '' }${ this.currentBankrollRelativeToZero }`, color: 'red'});
+        output({text: `Max bankroll: $${ this._maxBankrollRelativeToZero > 0 ? '+' : '' }${ this._maxBankrollRelativeToZero }`, color: 'red'});
+        output({text: `Min bankroll: $${ this._minBankrollRelativeToZero > 0 ? '+' : '' }${ this._minBankrollRelativeToZero }`, color: 'red'});
         return winsAndLosses;
     }
 
@@ -523,7 +530,7 @@ export class ModifiedColdTable {
 
 
     private totalAmountOnDontComeBets() : number {
-        let total = 0;
+        let total: number = 0;
 
         total += this._amountOnDontCome4;
         total += this._amountOnDontCome5;
@@ -536,7 +543,7 @@ export class ModifiedColdTable {
     }
 
     private totalAmountOnComeBets() : number {
-        let total = 0;
+        let total: number = 0;
 
         total += this._amountOnCome4;
         total += this._amountOnCome5;

@@ -1,7 +1,7 @@
-import { min } from "rxjs";
+import { count, min } from "rxjs";
 import { Common } from "./common.model";
 
-export class ColdTable {
+export class ChoppyTable {
     private _amountOnDontPass: number = 0;
     private _amountOnDontCome: number = 0;
     private _amountOnCome: number = 0;
@@ -20,7 +20,7 @@ export class ColdTable {
     private _maxBankrollRelativeToZero: number = 0;
     private _minBankrollRelativeToZero: number = 0;
     private _bettingUnit: number = 0;
-    private _maxBettingUnitsPerShooter: number = 4;
+    private _maxBettingUnitsPerShooter: number = 6;
     private _unitsOnHand: number = this._maxBettingUnitsPerShooter;
     private _output: Function = () => {};
 
@@ -52,7 +52,7 @@ export class ColdTable {
 
     
     public runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void) : number[] {
-        output({text: 'Starting simulation for cold table strategy...', color: 'black'});
+        output({text: 'Starting simulation for choppy table strategy...', color: 'black'});
 
         let isComeout: boolean = true;
         let maxDontComeBets: number = 2;
@@ -81,30 +81,21 @@ export class ColdTable {
                     }
                 }
                 else {
-                    // We want no more than 2 don't come bets set
-                    if (this.totalAmountOnDontComeBets() === bettingUnit * maxDontComeBets) {
-                        // Don't do anything, just roll
-                        output({text: `Max don't come bets in place, just rolling`, color: 'black'});
-                    }
-                    // See if we should put a unit on the come
-                    else if (this.totalAmountOnDontComeBets() == 0
-                            && this.totalAmountOnComeBets() < bettingUnit * maxComeBets
-                            && this._unitsOnHand > 0) {
-                        output({text: 'Placing bet on come', color: 'black'});
-                        this._amountOnCome = bettingUnit;
-                        this.currentBankrollRelativeToZero -= bettingUnit;
-                    }
                     // See if we should put a unit on the don't come.
-                    // We know we're not putting a unit on the come.
-                    // We know we're not at max don't come bets as it was checked above.
-                    // The idea here is that once you go dark, stay dark
-                    else if ((this.totalAmountOnDontComeBets() > 0
-                            || this.totalAmountOnComeBets() === bettingUnit * maxComeBets)
+                    if (this.totalAmountOnDontComeBets() === 0
                             && this._unitsOnHand > 0) {
                         output({text: `Placing bet on don't come`, color: 'black'});
                         this._amountOnDontCome = bettingUnit;
                         this.currentBankrollRelativeToZero -= bettingUnit;
                     }
+                    // See if we should put 2 units on the come
+                    else if (this.totalAmountOnComeBets() === 0
+                            && this._unitsOnHand > 1) {
+                        output({text: 'Placing 2 units on come', color: 'black'});
+                        this._amountOnCome = bettingUnit * 2;
+                        this.currentBankrollRelativeToZero -= bettingUnit * 2;
+                    }
+
                 }
 
                 if (isComeout) { output({text: `Coming out...`, color: 'black'}); }
@@ -151,7 +142,7 @@ export class ColdTable {
 
                         // Win a come bet on 4
                         if (this._amountOnCome4 > 0) {
-                            this.currentBankrollRelativeToZero += bettingUnit * 2;
+                            this.currentBankrollRelativeToZero += this._amountOnCome4 * 2;
                             this._amountOnCome4 = 0;
                             output({text: `Won come bet on ${dice}`, color: 'black'});
                         }
@@ -163,7 +154,7 @@ export class ColdTable {
 
                         if (this._amountOnCome > 0) {
                             // Move the come bet to the number
-                            this._amountOnCome4 = bettingUnit;
+                            this._amountOnCome4 = this._amountOnCome;
                             this._amountOnCome = 0;
                             output({text: `Moving come bet to ${dice}`, color: 'black'});
                         }
@@ -194,7 +185,7 @@ export class ColdTable {
 
                         // Win a come bet on 5
                         if (this._amountOnCome5 > 0) {
-                            this.currentBankrollRelativeToZero += bettingUnit * 2;
+                            this.currentBankrollRelativeToZero += this._amountOnCome5 * 2;
                             this._amountOnCome5 = 0;
                             output({text: `Won come bet on ${dice}`, color: 'black'});
                         }
@@ -206,7 +197,7 @@ export class ColdTable {
 
                         if (this._amountOnCome > 0) {
                             // Move the come bet to the number
-                            this._amountOnCome5 = bettingUnit;
+                            this._amountOnCome5 = this._amountOnCome;
                             this._amountOnCome = 0;
                             output({text: `Moving come bet to ${dice}`, color: 'black'});
                         }
@@ -237,7 +228,7 @@ export class ColdTable {
 
                         // Win a come bet on 6
                         if (this._amountOnCome6 > 0) {
-                            this.currentBankrollRelativeToZero += bettingUnit * 2;
+                            this.currentBankrollRelativeToZero += this._amountOnCome6 * 2;
                             this._amountOnCome6 = 0;
                             output({text: `Won come bet on ${dice}`, color: 'black'});
                         }
@@ -249,7 +240,7 @@ export class ColdTable {
 
                         if (this._amountOnCome > 0) {
                             // Move the come bet to the number
-                            this._amountOnCome6 = bettingUnit;
+                            this._amountOnCome6 = this._amountOnCome;
                             this._amountOnCome = 0;
                             output({text: `Moving come bet to ${dice}`, color: 'black'});
                         }
@@ -284,7 +275,7 @@ export class ColdTable {
                             }
 
                             if (this._amountOnCome > 0) {
-                                this.currentBankrollRelativeToZero += bettingUnit * 2;
+                                this.currentBankrollRelativeToZero += this._amountOnCome * 2;
                                 output({text: `Won on come bet`, color: 'black'});
                                 this._amountOnCome = 0;
                             }
@@ -321,7 +312,7 @@ export class ColdTable {
 
                         // Win a come bet on 8
                         if (this._amountOnCome8 > 0) {
-                            this.currentBankrollRelativeToZero += bettingUnit * 2;
+                            this.currentBankrollRelativeToZero += this._amountOnCome8 * 2;
                             this._amountOnCome8 = 0;
                             output({text: `Won come bet on ${dice}`, color: 'black'});
                         }
@@ -333,7 +324,7 @@ export class ColdTable {
 
                         if (this._amountOnCome > 0) {
                             // Move the come bet to the number
-                            this._amountOnCome8 = bettingUnit;
+                            this._amountOnCome8 = this._amountOnCome;
                             this._amountOnCome = 0;
                             output({text: `Moving come bet to ${dice}`, color: 'black'});
                         }
@@ -364,7 +355,7 @@ export class ColdTable {
 
                         // Win a come bet on 9
                         if (this._amountOnCome9 > 0) {
-                            this.currentBankrollRelativeToZero += bettingUnit * 2;
+                            this.currentBankrollRelativeToZero += this._amountOnCome9 * 2;
                             this._amountOnCome9 = 0;
                             output({text: `Won come bet on ${dice}`, color: 'black'});
                         }
@@ -383,7 +374,7 @@ export class ColdTable {
 
                         if (this._amountOnDontCome > 0) {
                             // Move the don't come to the number
-                            this._amountOnDontCome9 = bettingUnit;
+                            this._amountOnDontCome9 = this._amountOnCome;
                             this._amountOnDontCome = 0;
                             output({text: `Moving don't come bet to ${dice}`, color: 'black'});
                         }
@@ -407,7 +398,7 @@ export class ColdTable {
 
                         // Win a come bet on 10
                         if (this._amountOnCome10 > 0) {
-                            this.currentBankrollRelativeToZero += bettingUnit * 2;
+                            this.currentBankrollRelativeToZero += this._amountOnCome10 * 2;
                             this._amountOnCome10 = 0;
                             output({text: `Won come bet on ${dice}`, color: 'black'});
                         }
@@ -419,7 +410,7 @@ export class ColdTable {
 
                         if (this._amountOnCome > 0) {
                             // Move the come bet to the number
-                            this._amountOnCome10 = bettingUnit;
+                            this._amountOnCome10 = this._amountOnCome;
                             this._amountOnCome = 0;
                             output({text: `Moving come bet to ${dice}`, color: 'black'});
                         }
@@ -440,7 +431,7 @@ export class ColdTable {
 
                         // Win the come
                         if (this._amountOnCome > 0) {
-                            this.currentBankrollRelativeToZero += bettingUnit * 2; // Take the winnings. We'll add a unit back to the come.
+                            this.currentBankrollRelativeToZero += this._amountOnCome * 2; // Take the winnings. We'll add a unit back to the come.
                             output({text: `Won the come`, color: 'black'});
                         }
 

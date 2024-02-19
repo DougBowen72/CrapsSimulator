@@ -137,8 +137,8 @@ export class SixAndEightOnly {
                             this._amountOn6 = 0;
                             this._amountOn8 = 0;
 
-                            output({text: `Win/Loss for this shooter: ${ winLoss > 0 ? '+' : '' }${winLoss}`, color: 'red'});
-                            output({text: `Cumulative win/loss: ${ this.currentBankrollRelativeToZero > 0 ? '+' : '' }${this.currentBankrollRelativeToZero}`, color: 'red'});
+                            output({text: `Win/Loss for this shooter: $${ winLoss > 0 ? '+' : '' }${winLoss}`, color: 'red'});
+                            output({text: `Cumulative win/loss: $${ this.currentBankrollRelativeToZero > 0 ? '+' : '' }${this.currentBankrollRelativeToZero}`, color: 'red'});
                             winsAndLosses.push(this.currentBankrollRelativeToZero);
                         }
                         break;
@@ -146,9 +146,9 @@ export class SixAndEightOnly {
             }
         }
 
-        output({text: `Win/Loss after ALL shooters: ${ this.currentBankrollRelativeToZero > 0 ? '+' : '' }${ this.currentBankrollRelativeToZero }`, color: 'red'});
-        output({text: `Max bankroll: ${ this._maxBankrollRelativeToZero > 0 ? '+' : '' }${ this._maxBankrollRelativeToZero }`, color: 'red'});
-        output({text: `Min bankroll: ${ this._minBankrollRelativeToZero > 0 ? '+' : '' }${ this._minBankrollRelativeToZero }`, color: 'red'});
+        output({text: `Win/Loss after ALL shooters: $${ this.currentBankrollRelativeToZero > 0 ? '+' : '' }${ this.currentBankrollRelativeToZero }`, color: 'red'});
+        output({text: `Max bankroll: $${ this._maxBankrollRelativeToZero > 0 ? '+' : '' }${ this._maxBankrollRelativeToZero }`, color: 'red'});
+        output({text: `Min bankroll: $${ this._minBankrollRelativeToZero > 0 ? '+' : '' }${ this._minBankrollRelativeToZero }`, color: 'red'});
         return winsAndLosses;
     }
 
