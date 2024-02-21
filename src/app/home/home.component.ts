@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { IStrategy } from './strategy.model';
 import { FormsModule } from '@angular/forms';
 import { ColdTable } from './coldTable.model';
@@ -13,13 +13,18 @@ import { IronCross } from './ironCross.model';
 import { Knockout } from './knockout.model';
 import { PassLineWithSixAndEight } from './passlineWithSixAndEight.model';
 import { ChoppyTable } from './choppyTable.model';
+import { GridModule } from "@progress/kendo-angular-grid";
+import { Product } from './product';
+import 'hammerjs';
+import { ChildComponentComponent } from '../child-component/child-component.component';
 
 @Component({
   selector: 'craps-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, ChartModule],
+  imports: [CommonModule, FormsModule, ChartModule, GridModule, ChildComponentComponent],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.css',
+  encapsulation: ViewEncapsulation.None
 })
 export class HomeComponent {
 
@@ -33,12 +38,43 @@ export class HomeComponent {
   public oddsMultipe: number = 1;
   public maxComeBets: number = 3;
   public winLossData: number[] = [];
+  public seriesData: number[] = [1, 2, 3, 5];
 
   public seriesLabels: SeriesLabels = {
     visible: true, // Note that visible defaults to false
     padding: 3,
     font: "bold 8px Arial, sans-serif",
   };
+
+  public gridData: Product[] = [
+    {
+      ProductID: 1,
+      ProductName: "Chai",
+      UnitPrice: 18,
+      Category: {
+        CategoryID: 1,
+        CategoryName: "Beverages",
+      },
+    },
+    {
+      ProductID: 2,
+      ProductName: "Chang",
+      UnitPrice: 19,
+      Category: {
+        CategoryID: 1,
+        CategoryName: "Beverages",
+      },
+    },
+    {
+      ProductID: 3,
+      ProductName: "Aniseed Syrup",
+      UnitPrice: 10,
+      Category: {
+        CategoryID: 2,
+        CategoryName: "Condiments",
+      },
+    },
+  ];
 
   constructor() {
     this.strategies = [
@@ -164,6 +200,6 @@ export class HomeComponent {
 
   private sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
-}
-
+  }
+  
 }

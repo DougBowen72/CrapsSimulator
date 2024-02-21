@@ -1,4 +1,5 @@
 <div style="color: red;">{{ error }}</div>
+<!-- <craps-child-component class="red"></craps-child-component> -->
 <label for="strategies">Choose a strategy: </label>
 <select id="strategies" [(ngModel)]="selectedStrategy">
   <option *ngFor="let strategy of strategies" [ngValue]="strategy.id">{{ strategy.name }}</option>
@@ -33,9 +34,9 @@
 <br/>
 <div *ngIf="isRunning">Executing simulation please wait...</div>
 <br/>
-<kendo-chart *ngIf="winLossData.length > 0">
+<kendo-chart *ngIf="winLossData.length > 0" style="height: 500px;">
   <kendo-chart-value-axis>
-    <kendo-chart-value-axis-item [title]="{ text: 'Win/Loss' }">
+    <kendo-chart-value-axis-item [title]="{ text: 'Win/Loss in $' }">
     </kendo-chart-value-axis-item>
   </kendo-chart-value-axis>
   <kendo-chart-category-axis>
@@ -43,8 +44,33 @@
     </kendo-chart-category-axis-item>
   </kendo-chart-category-axis>
   <kendo-chart-series>
-    <!-- <kendo-chart-series-item-tooltip>Some value</kendo-chart-series-item-tooltip> -->
-    <kendo-chart-series-item type="line" [data]="winLossData" [labels]="seriesLabels"></kendo-chart-series-item>
+    <kendo-chart-series-item type="line" [data]="winLossData" [labels]="seriesLabels">
+      <kendo-chart-series-item-tooltip format="${0}">
+      </kendo-chart-series-item-tooltip>
+    </kendo-chart-series-item>
   </kendo-chart-series>
 </kendo-chart>
-<div [ngStyle]="{'color': s.color }" *ngFor="let s of output.slice().reverse()">{{ s.text }}</div>
+<div style="white-space: pre-wrap;" [ngStyle]="{'color': s.color }" *ngFor="let s of output.slice().reverse()">{{ s.text }}</div>
+
+<!-- <kendo-chart style="width: 300px; height: 200px; background-color: blue;">
+  <kendo-chart-series>
+    <kendo-chart-series-item [data]="seriesData" type="column"> </kendo-chart-series-item>
+  </kendo-chart-series>
+</kendo-chart>
+<kendo-grid [data]="gridData">
+  <kendo-grid-column field="ProductID" title="ID"> </kendo-grid-column>
+  <kendo-grid-column field="ProductName" title="Name"> </kendo-grid-column>
+  <kendo-grid-column field="Category.CategoryName" title="Category"></kendo-grid-column>
+  <kendo-grid-column field="UnitPrice" title="Price"> </kendo-grid-column>
+</kendo-grid> -->
+
+<!-- <kendo-chart>
+  <kendo-chart-tooltip> </kendo-chart-tooltip>
+  <kendo-chart-series>
+    <kendo-chart-series-item [data]="[1, 2, 3]"> </kendo-chart-series-item>
+    <kendo-chart-series-item [data]="[1, 2, 3]">
+      <kendo-chart-series-item-tooltip background="green">
+      </kendo-chart-series-item-tooltip>
+    </kendo-chart-series-item>
+  </kendo-chart-series>
+</kendo-chart> -->
