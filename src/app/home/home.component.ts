@@ -194,6 +194,8 @@ export class HomeComponent {
         this.error = 'Strategy not implemented';
     }
 
+    // Add a starting point
+    this.winLossData.splice(0, 0, 0);
     this.isRunning = false;
     await this.sleep(1);
   }
