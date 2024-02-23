@@ -15,7 +15,7 @@ import { PassLineWithSixAndEight } from './passlineWithSixAndEight.model';
 import { ChoppyTable } from './choppyTable.model';
 import { GridModule } from "@progress/kendo-angular-grid";
 import { Product } from './product';
-import 'hammerjs';
+//import 'hammerjs';
 import { ChildComponentComponent } from '../child-component/child-component.component';
 
 @Component({
