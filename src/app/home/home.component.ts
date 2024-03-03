@@ -17,6 +17,7 @@ import { GridModule } from "@progress/kendo-angular-grid";
 import { Product } from './product';
 //import 'hammerjs';
 import { ChildComponentComponent } from '../child-component/child-component.component';
+import { ThreePointBlender } from './ThreePointBlender.model';
 
 @Component({
   selector: 'craps-home',
@@ -46,35 +47,35 @@ export class HomeComponent {
     font: "bold 8px Arial, sans-serif",
   };
 
-  public gridData: Product[] = [
-    {
-      ProductID: 1,
-      ProductName: "Chai",
-      UnitPrice: 18,
-      Category: {
-        CategoryID: 1,
-        CategoryName: "Beverages",
-      },
-    },
-    {
-      ProductID: 2,
-      ProductName: "Chang",
-      UnitPrice: 19,
-      Category: {
-        CategoryID: 1,
-        CategoryName: "Beverages",
-      },
-    },
-    {
-      ProductID: 3,
-      ProductName: "Aniseed Syrup",
-      UnitPrice: 10,
-      Category: {
-        CategoryID: 2,
-        CategoryName: "Condiments",
-      },
-    },
-  ];
+  // public gridData: Product[] = [
+  //   {
+  //     ProductID: 1,
+  //     ProductName: "Chai",
+  //     UnitPrice: 18,
+  //     Category: {
+  //       CategoryID: 1,
+  //       CategoryName: "Beverages",
+  //     },
+  //   },
+  //   {
+  //     ProductID: 2,
+  //     ProductName: "Chang",
+  //     UnitPrice: 19,
+  //     Category: {
+  //       CategoryID: 1,
+  //       CategoryName: "Beverages",
+  //     },
+  //   },
+  //   {
+  //     ProductID: 3,
+  //     ProductName: "Aniseed Syrup",
+  //     UnitPrice: 10,
+  //     Category: {
+  //       CategoryID: 2,
+  //       CategoryName: "Condiments",
+  //     },
+  //   },
+  // ];
 
   constructor() {
     this.strategies = [
@@ -122,6 +123,11 @@ export class HomeComponent {
         id: 9,
         name: 'Choppy table',
         description: `Don't pass, don't come, 2 units on come`
+      },
+      {
+        id: 10,
+        name: '3 Point Blender',
+        description: `Don't pass, don't come, place don't come number, 2nd don't come, place 2nd don't come number, then place the don't pass number. Place bets are always working.`
       }
     ];
   }
@@ -190,7 +196,11 @@ export class HomeComponent {
           let choppy: ChoppyTable = new ChoppyTable();
           this.winLossData = choppy.runSimulation(this.bettingUnit, this.shooters, output)
           break;
-      default:
+      case 10:
+          let blender: ThreePointBlender = new ThreePointBlender();
+          this.winLossData = blender.runSimulation(this.bettingUnit, this.shooters, output)
+          break;
+        default:
         this.error = 'Strategy not implemented';
     }
 
