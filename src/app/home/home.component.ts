@@ -18,6 +18,7 @@ import { Product } from './product';
 //import 'hammerjs';
 import { ChildComponentComponent } from '../child-component/child-component.component';
 import { ThreePointBlender } from './ThreePointBlender.model';
+import { Feed6And8 } from './feed6And8.model';
 
 @Component({
   selector: 'craps-home',
@@ -38,6 +39,7 @@ export class HomeComponent {
   public isRunning: boolean = false;
   public oddsMultipe: number = 1;
   public maxComeBets: number = 3;
+  public maxDontComeBets: number = 2;
   public winLossData: number[] = [];
   public seriesData: number[] = [1, 2, 3, 5];
 
@@ -82,7 +84,7 @@ export class HomeComponent {
       {
         id: 1,
         name: 'Cold Table',
-        description: `Max 4 units per shooter, don't pass, come, come, don't come, don't come (if enough units, max 2 don't come bets). Once you go dark stay dark. If any don't come bets are in place, no more come bets.`
+        description: `Max 4 units per shooter, don't pass, come, come, don't come, don't come (if enough units, up to max don't come bets). Once you go dark stay dark. If any don't come bets are in place, no more come bets.`
       },
       {
         id: 2,
@@ -97,7 +99,7 @@ export class HomeComponent {
       {
         id: 4,
         name: 'Modified Cold Table',
-        description: `Same as Cold Table but keep trying to get 2 come bets even if two don't comes are in place`
+        description: `Same as Cold Table but keep trying to get 2 come bets even if don't comes are in place`
       },
       {
         id: 5,
@@ -128,6 +130,11 @@ export class HomeComponent {
         id: 10,
         name: '3 Point Blender',
         description: `Don't pass, don't come, place don't come number, 2nd don't come, place 2nd don't come number, then place the don't pass number. Place bets are always working.`
+      },
+      {
+        id: 11,
+        name: 'Feed the 6 and 8',
+        description: `Place the 5 and 9 (not working on come out), when 5 hits put winnings on 6, when 9 hits put winnings on 8, when 6 or 8 hit, collect.`
       }
     ];
   }
@@ -155,14 +162,17 @@ export class HomeComponent {
     await this.sleep(25);
 
     let output = (s: {text: string, color: string}) => {
-      this.output.push({text: s.text, color: s.color});
-      console.info(s.text);
+      if (this.shooters <= 100) {
+        this.output.push({text: s.text, color: s.color});
+      }
+      
+      //console.info(s.text);
     }
 
     switch (this.selectedStrategy) {
       case 1:
           let coldTable: ColdTable = new ColdTable();
-          this.winLossData = coldTable.runSimulation(this.bettingUnit, this.shooters, output);
+          this.winLossData = coldTable.runSimulation(this.bettingUnit, this.shooters, this.maxDontComeBets, output);
           break;
       case 2:
           let sixAndEight: SixAndEight = new SixAndEight();
@@ -174,7 +184,7 @@ export class HomeComponent {
           break;
       case 4:
           let modifiedColdTable: ModifiedColdTable = new ModifiedColdTable();
-          this.winLossData = modifiedColdTable.runSimulation(this.bettingUnit, this.shooters, output)
+          this.winLossData = modifiedColdTable.runSimulation(this.bettingUnit, this.shooters, this.maxDontComeBets, output)
           break;
       case 5:
           let sixAndEightOnly: SixAndEightOnly = new SixAndEightOnly();
@@ -199,6 +209,10 @@ export class HomeComponent {
       case 10:
           let blender: ThreePointBlender = new ThreePointBlender();
           this.winLossData = blender.runSimulation(this.bettingUnit, this.shooters, output)
+          break;
+      case 11:
+          let feed: Feed6And8 = new Feed6And8();
+          this.winLossData = feed.runSimulation(this.bettingUnit, this.shooters, output)
           break;
         default:
         this.error = 'Strategy not implemented';

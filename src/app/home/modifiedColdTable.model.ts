@@ -51,11 +51,11 @@ export class ModifiedColdTable {
     }
 
     
-    public runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void) : number[] {
+    public runSimulation(bettingUnit: number, shooters: number, maxDontComeBets: number, output: (s: {text:string, color:string}) => void) : number[] {
         output({text: 'Starting simulation for Modified Cold Table strategy...', color: 'black'});
 
         let isComeout: boolean = true;
-        let maxDontComeBets: number = 2;
+        //let maxDontComeBets: number = 2;
         let maxComeBets: number = 2;
         let winsAndLosses: number[] = [];
 
