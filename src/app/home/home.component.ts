@@ -19,6 +19,7 @@ import { Product } from './product';
 import { ChildComponentComponent } from '../child-component/child-component.component';
 import { ThreePointBlender } from './ThreePointBlender.model';
 import { Feed6And8 } from './feed6And8.model';
+import { Feed5And9 } from './feed5And9.model';
 
 @Component({
   selector: 'craps-home',
@@ -135,6 +136,11 @@ export class HomeComponent {
         id: 11,
         name: 'Feed the 6 and 8',
         description: `Place the 5 and 9 (not working on come out), when 5 hits put winnings on 6, when 9 hits put winnings on 8, when 6 or 8 hit, collect.`
+      },
+      {
+        id: 12,
+        name: 'Feed the 5 and 9',
+        description: `Place the 6 and 8 (not working on come out), when 6 hits put winnings on 5, when 8 hits put winnings on 9, when 5 or 9 hit, collect.`
       }
     ];
   }
@@ -213,6 +219,10 @@ export class HomeComponent {
       case 11:
           let feed: Feed6And8 = new Feed6And8();
           this.winLossData = feed.runSimulation(this.bettingUnit, this.shooters, output)
+          break;
+      case 12:
+          let feed5And9: Feed5And9 = new Feed5And9();
+          this.winLossData = feed5And9.runSimulation(this.bettingUnit, this.shooters, output)
           break;
         default:
         this.error = 'Strategy not implemented';
