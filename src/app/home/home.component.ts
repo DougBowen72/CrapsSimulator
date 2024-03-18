@@ -50,36 +50,6 @@ export class HomeComponent {
     font: "bold 8px Arial, sans-serif",
   };
 
-  // public gridData: Product[] = [
-  //   {
-  //     ProductID: 1,
-  //     ProductName: "Chai",
-  //     UnitPrice: 18,
-  //     Category: {
-  //       CategoryID: 1,
-  //       CategoryName: "Beverages",
-  //     },
-  //   },
-  //   {
-  //     ProductID: 2,
-  //     ProductName: "Chang",
-  //     UnitPrice: 19,
-  //     Category: {
-  //       CategoryID: 1,
-  //       CategoryName: "Beverages",
-  //     },
-  //   },
-  //   {
-  //     ProductID: 3,
-  //     ProductName: "Aniseed Syrup",
-  //     UnitPrice: 10,
-  //     Category: {
-  //       CategoryID: 2,
-  //       CategoryName: "Condiments",
-  //     },
-  //   },
-  // ];
-
   constructor() {
     this.strategies = [
       {
@@ -168,6 +138,7 @@ export class HomeComponent {
     await this.sleep(25);
 
     let output = (s: {text: string, color: string}) => {
+      // If there are more than 100 shooters we're not going to be looking at the individual rolls so don't bother logging them because it slows the process down.
       if (this.shooters <= 100) {
         this.output.push({text: s.text, color: s.color});
       }

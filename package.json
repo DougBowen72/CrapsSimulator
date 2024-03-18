@@ -22,7 +22,6 @@
     "@progress/kendo-angular-grid": "^15.0.1",
     "@progress/kendo-angular-ripple": "^15.0.1",
     "@progress/kendo-licensing": "^1.3.5",
-    "hammerjs": "^2.0.8",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
