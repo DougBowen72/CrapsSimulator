@@ -6,4 +6,8 @@ export abstract class Common {
         let die2 = Math.floor(Math.random() * 6 + 1);
         return die1 + die2;
     }
+
+    public static sleep(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
 }

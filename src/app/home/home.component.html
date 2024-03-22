@@ -39,6 +39,11 @@
 <br/>
 <div *ngIf="isRunning">Executing simulation please wait...</div>
 <br/>
+<div *ngIf="isRunning && shooters > 25">
+  <p>Shooters</p>
+  <kendo-progressbar [value]="progressValue" [min]="0" [max]="shooters"></kendo-progressbar>
+</div>
+<br/>
 <kendo-chart *ngIf="winLossData.length > 0" style="height: 500px;">
   <kendo-chart-value-axis>
     <kendo-chart-value-axis-item [title]="{ text: 'Win/Loss in $' }">

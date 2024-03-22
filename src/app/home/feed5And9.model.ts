@@ -20,7 +20,7 @@ export class Feed5And9 {
             this._maxBankrollRelativeToZero = this._currentBankrollRelativeToZero;
         }
     }
-    public runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void) : number[] {
+    public async runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void, incrementProgress: () => void) : Promise<number[]> {
         output({text: 'Starting simulation for Feed the 5 and 9 strategy...', color: 'black'});
 
         let isComeout: boolean = true;
@@ -75,6 +75,11 @@ export class Feed5And9 {
         // Now spin the shooters
         for (let i: number = 0; i < shooters; i++)
         {
+            incrementProgress();
+            
+            // Allows the page to refresh with the status bar and output
+            await Common.sleep(1);
+
             let sevenOut: boolean = false;
             let point: number = 0;
             this._bankrollPreviousShooter = this.currentBankrollRelativeToZero;

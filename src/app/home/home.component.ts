@@ -14,6 +14,7 @@ import { Knockout } from './knockout.model';
 import { PassLineWithSixAndEight } from './passlineWithSixAndEight.model';
 import { ChoppyTable } from './choppyTable.model';
 import { GridModule } from "@progress/kendo-angular-grid";
+import { ProgressBarModule } from "@progress/kendo-angular-progressbar";
 import { Product } from './product';
 //import 'hammerjs';
 import { ChildComponentComponent } from '../child-component/child-component.component';
@@ -24,7 +25,7 @@ import { Feed5And9 } from './feed5And9.model';
 @Component({
   selector: 'craps-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, ChartModule, GridModule, ChildComponentComponent],
+  imports: [CommonModule, FormsModule, ChartModule, GridModule, ChildComponentComponent, ProgressBarModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   encapsulation: ViewEncapsulation.None
@@ -43,6 +44,7 @@ export class HomeComponent {
   public maxDontComeBets: number = 2;
   public winLossData: number[] = [];
   public seriesData: number[] = [1, 2, 3, 5];
+  public progressValue: number = 0;
 
   public seriesLabels: SeriesLabels = {
     visible: true, // Note that visible defaults to false
@@ -122,7 +124,6 @@ export class HomeComponent {
     else {
       return '';
     }
-    
   }
 
   public async runStrategy() {
@@ -135,7 +136,15 @@ export class HomeComponent {
     this.error = '';
     this.output.length = 0;
     this.winLossData = [];
-    await this.sleep(25);
+    this.progressValue = 0;
+    //await this.sleep(25);
+
+    // while (true) {
+    //   await this.sleep(50);
+    //   this.progressValue++;
+    //   if (this.progressValue > this.shooters) break;
+    // }
+    // return;
 
     let output = (s: {text: string, color: string}) => {
       // If there are more than 100 shooters we're not going to be looking at the individual rolls so don't bother logging them because it slows the process down.
@@ -146,54 +155,59 @@ export class HomeComponent {
       //console.info(s.text);
     }
 
+    let incrementProgress = () => {
+      this.progressValue++;
+    }
+
     switch (this.selectedStrategy) {
       case 1:
           let coldTable: ColdTable = new ColdTable();
-          this.winLossData = coldTable.runSimulation(this.bettingUnit, this.shooters, this.maxDontComeBets, output);
+          //coldTable.onNextShooter = async () => { this.progressValue++; };
+          this.winLossData = await coldTable.runSimulation(this.bettingUnit, this.shooters, this.maxDontComeBets, output, incrementProgress);
           break;
       case 2:
           let sixAndEight: SixAndEight = new SixAndEight();
-          this.winLossData = sixAndEight.runSimulation(this.bettingUnit, this.shooters, output);
+          this.winLossData = await sixAndEight.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress);
           break;
       case 3:
           let passLineOnly: PassLineOnly = new PassLineOnly();
-          this.winLossData = passLineOnly.runSimulation(this.bettingUnit, this.shooters, this.oddsMultipe, this.maxComeBets, output)
+          this.winLossData = await passLineOnly.runSimulation(this.bettingUnit, this.shooters, this.oddsMultipe, this.maxComeBets, output, incrementProgress);
           break;
       case 4:
           let modifiedColdTable: ModifiedColdTable = new ModifiedColdTable();
-          this.winLossData = modifiedColdTable.runSimulation(this.bettingUnit, this.shooters, this.maxDontComeBets, output)
+          this.winLossData = await modifiedColdTable.runSimulation(this.bettingUnit, this.shooters, this.maxDontComeBets, output, incrementProgress);
           break;
       case 5:
           let sixAndEightOnly: SixAndEightOnly = new SixAndEightOnly();
-          this.winLossData = sixAndEightOnly.runSimulation(this.bettingUnit, this.shooters, output)
+          this.winLossData = await sixAndEightOnly.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress);
           break;
       case 6:
           let ironCross: IronCross = new IronCross();
-          this.winLossData = ironCross.runSimulation(this.bettingUnit, this.shooters, output)
+          this.winLossData = await ironCross.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress);
           break;
       case 7:
           let knockout: Knockout = new Knockout();
-          this.winLossData = knockout.runSimulation(this.bettingUnit, this.shooters, this.oddsMultipe, output)
+          this.winLossData = await knockout.runSimulation(this.bettingUnit, this.shooters, this.oddsMultipe, output, incrementProgress);
           break;
       case 8:
           let passWith6And8: PassLineWithSixAndEight = new PassLineWithSixAndEight();
-          this.winLossData = passWith6And8.runSimulation(this.bettingUnit, this.shooters, this.oddsMultipe, output)
+          this.winLossData = await passWith6And8.runSimulation(this.bettingUnit, this.shooters, this.oddsMultipe, output, incrementProgress);
           break;
       case 9:
           let choppy: ChoppyTable = new ChoppyTable();
-          this.winLossData = choppy.runSimulation(this.bettingUnit, this.shooters, output)
+          this.winLossData = await choppy.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress);
           break;
       case 10:
           let blender: ThreePointBlender = new ThreePointBlender();
-          this.winLossData = blender.runSimulation(this.bettingUnit, this.shooters, output)
+          this.winLossData = await blender.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress);
           break;
       case 11:
           let feed: Feed6And8 = new Feed6And8();
-          this.winLossData = feed.runSimulation(this.bettingUnit, this.shooters, output)
+          this.winLossData = await feed.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress);
           break;
       case 12:
           let feed5And9: Feed5And9 = new Feed5And9();
-          this.winLossData = feed5And9.runSimulation(this.bettingUnit, this.shooters, output)
+          this.winLossData = await feed5And9.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress);
           break;
         default:
         this.error = 'Strategy not implemented';
@@ -202,7 +216,6 @@ export class HomeComponent {
     // Add a starting point
     this.winLossData.splice(0, 0, 0);
     this.isRunning = false;
-    await this.sleep(1);
   }
 
   private sleep(ms: number) {

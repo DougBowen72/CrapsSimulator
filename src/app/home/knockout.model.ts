@@ -27,7 +27,7 @@ export class Knockout {
         }
     }
 
-    public runSimulation(bettingUnit: number, shooters: number, oddsMultiple: number, output: (s: {text:string, color:string}) => void) : number[] {
+    public async runSimulation(bettingUnit: number, shooters: number, oddsMultiple: number, output: (s: {text:string, color:string}) => void, incrementProgress: () => void) : Promise<number[]> {
         output({text: 'Starting simulation for Knockout strategy...', color: 'black'});
 
         let isComeout: boolean = true;
@@ -42,6 +42,11 @@ export class Knockout {
 
         for (let i: number = 0; i < shooters; i++)
         {
+            incrementProgress();
+            
+            // Allows the page to refresh with the status bar and output
+            await Common.sleep(1);
+
             let sevenOut: boolean = false;
             let point: number = 0;
             this._bankrollPreviousShooter = this.currentBankrollRelativeToZero;

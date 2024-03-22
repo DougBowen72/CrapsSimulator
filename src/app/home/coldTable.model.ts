@@ -23,6 +23,7 @@ export class ColdTable {
     private _maxBettingUnitsPerShooter: number = 4;
     private _unitsOnHand: number = this._maxBettingUnitsPerShooter;
     private _output: Function = () => {};
+    //public onNextShooter: () => void;
 
     private _currentBankrollRelativeToZero: number = 0;
     private get currentBankrollRelativeToZero() {
@@ -50,8 +51,11 @@ export class ColdTable {
         }
     }
 
+    // constructor() {
+    //     this.onNextShooter = () => {};
+    // }
     
-    public runSimulation(bettingUnit: number, shooters: number, maxDontComeBets: number, output: (s: {text:string, color:string}) => void) : number[] {
+    public async runSimulation(bettingUnit: number, shooters: number, maxDontComeBets: number, output: (s: {text:string, color:string}) => void, incrementProgress: () => void) : Promise<number[]> {
         output({text: 'Starting simulation for cold table strategy...', color: 'black'});
 
         let isComeout: boolean = true;
@@ -64,6 +68,12 @@ export class ColdTable {
 
         for (let i: number = 0; i < shooters; i++)
         {
+            //this.onNextShooter();
+            incrementProgress();
+            
+            // Allows the page to refresh with the status bar and output
+            await Common.sleep(1);
+
             let sevenOut: boolean = false;
             let point: number = 0;
 
@@ -462,6 +472,7 @@ export class ColdTable {
         output({text: `Win/Loss after ALL shooters: $${ this.currentBankrollRelativeToZero > 0 ? '+' : '' }${ this.currentBankrollRelativeToZero }`, color: 'red'});
         output({text: `Max bankroll (intra-roll): $${ this._maxBankrollRelativeToZero > 0 ? '+' : '' }${ this._maxBankrollRelativeToZero }`, color: 'red'});
         output({text: `Min bankroll (intra-roll): $${ this._minBankrollRelativeToZero > 0 ? '+' : '' }${ this._minBankrollRelativeToZero }`, color: 'red'});
+        //this.onNextShooter()
         return winsAndLosses;
     }
 
