@@ -20,7 +20,7 @@ export class Feed5And9 {
             this._maxBankrollRelativeToZero = this._currentBankrollRelativeToZero;
         }
     }
-    public async runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void, incrementProgress: () => void) : Promise<number[]> {
+    public runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void, incrementProgress: () => void, diceRolls : number[]) : number[] {
         output({text: 'Starting simulation for Feed the 5 and 9 strategy...', color: 'black'});
 
         let isComeout: boolean = true;
@@ -30,6 +30,7 @@ export class Feed5And9 {
         let amountOn8: number = 0;
         let amountOn9: number = 0;
         let sixAndEightBet: number = 0;
+        let rollDice: boolean = diceRolls.length < 1;
 
         let rem: number = bettingUnit % 6;
 
@@ -72,13 +73,15 @@ export class Feed5And9 {
         // Now figure out how much we will collect since the 6 and 8 payout will be more than what we put on the 5/9
         let addBackToBankroll: number = sixAndEightPayout - addition;
         
+        let rollCount: number = -1;
+
         // Now spin the shooters
         for (let i: number = 0; i < shooters; i++)
         {
             incrementProgress();
             
             // Allows the page to refresh with the status bar and output
-            await Common.sleep(1);
+            //await Common.sleep(1);
 
             let sevenOut: boolean = false;
             let point: number = 0;
@@ -102,7 +105,19 @@ export class Feed5And9 {
                 // Roll the dice
                 if (isComeout) { output({text: `Coming out...`, color: 'black'}); }
                 //output({text: 'Rolling...', color: 'black'});
-                let dice = Common.rollDice();
+                let dice: number;
+                rollCount++;
+
+                if (rollDice) {
+                    console.log("5 and 9 rolling");
+                    dice = Common.rollDice();
+                    diceRolls.push(dice);
+                }
+                else {
+                    console.log("5 and 9 pulling from array");
+                    dice = diceRolls[rollCount];
+                }
+
                 output({text: `${dice} rolled`, color: 'black'});
 
                 switch (dice) {

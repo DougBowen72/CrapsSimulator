@@ -1,12 +1,31 @@
 <div style="color: red;">{{ error }}</div>
 <!-- <craps-child-component class="red"></craps-child-component> -->
-<label for="strategies">Choose a strategy: </label>
-<select id="strategies" [(ngModel)]="selectedStrategy">
+<span>This is a website that simulates craps strategies for a chosen number of shooters and graphs the output (win or loss) after each shooter. Expand a strategy to view the description. Choose one or more strategies, enter values in any additional fields and click the Run Simulation button to see the results.</span>
+<br/>
+<br/>
+<!-- <select id="strategies" [(ngModel)]="selectedStrategy" (change)="resetValues()">
   <option *ngFor="let strategy of strategies" [ngValue]="strategy.id">{{ strategy.name }}</option>
 </select>
+<div *ngFor="let strategy of strategies">
+  <input type="checkbox" kendoCheckBox> {{ strategy.name}}
+</div> -->
+<kendo-treeview
+      [nodes]="strategies"
+      [textField]="['name', 'text']"
+      kendoTreeViewExpandable
+      kendoTreeViewHierarchyBinding
+      childrenField="description"
+      [kendoTreeViewCheckable]="{ checkChildren: false, enabled: true, checkOnClick: false, mode: 'multiple' }"
+      [hasCheckbox]="hasCheckbox"
+      [(checkedKeys)]="selectedStrategyIds"
+      checkBy="id">
+  </kendo-treeview>
+  <!-- (checkedChange)="handleChecking($event)" -->
+  
 <br/>
-<br *ngIf="getSelectedStrategyDescription().length > 0"/>
-<div *ngIf="getSelectedStrategyDescription().length > 0">Strategy description: {{ getSelectedStrategyDescription() }}</div>
+<!-- <div>Checked keys: {{ selectedStrategyIds.join(",") }}</div> -->
+<!-- <br *ngIf="getSelectedStrategyDescription().length > 0"/>
+<div *ngIf="getSelectedStrategyDescription().length > 0">Strategy description: {{ getSelectedStrategyDescription() }}</div> -->
 <br/>
 <div>
     <label for="shooters">Number of shooters: </label>
@@ -17,19 +36,19 @@
   <label for="bettingUnit">Betting unit (multiple of 5): $</label>
   <input type="number" id="bettingUnit" [(ngModel)]="bettingUnit"/>
 </div>
-<br *ngIf="selectedStrategy === 3 || selectedStrategy === 7 || selectedStrategy === 8"/>
-<div *ngIf="selectedStrategy === 3 || selectedStrategy === 7 || selectedStrategy === 8">
+<div *ngIf="showOddsMultiple()">
+  <br />
   <label for="oddsMultiple">Odds multiple: </label>
-  <input type="number" id="oddsMultiple" [(ngModel)]="oddsMultipe"/>
+  <input type="number" id="oddsMultiple" [(ngModel)]="oddsMultiple"/>
   <br/>
 </div>
-<br *ngIf="selectedStrategy === 3"/>
-<div *ngIf="selectedStrategy === 3">
+<div *ngIf="showNumberOfComeBets()">
+  <br/>
   <label for="maxComeBets">Number of come bets: </label>
   <input type="number" id="maxComeBets" [(ngModel)]="maxComeBets"/>
 </div>
-<br *ngIf="selectedStrategy === 4 || selectedStrategy === 1"/>
-<div *ngIf="selectedStrategy === 4 || selectedStrategy === 1">
+<div *ngIf="showNumberOfDontComeBets()">
+  <br/>
   <label for="maxDontComeBets">Number of don't come bets: </label>
   <input type="number" id="maxDontComeBets" [(ngModel)]="maxDontComeBets"/>
 </div>
@@ -44,7 +63,9 @@
   <kendo-progressbar [value]="progressValue" [min]="0" [max]="shooters"></kendo-progressbar>
 </div>
 <br/>
-<kendo-chart *ngIf="winLossData.length > 0" style="height: 500px;">
+<kendo-chart *ngIf="winLossData.length > 0 && isRunning == false" style="height: 500px;">
+  <kendo-chart-legend position="top">
+  </kendo-chart-legend>
   <kendo-chart-value-axis>
     <kendo-chart-value-axis-item [title]="{ text: 'Win/Loss in $' }">
     </kendo-chart-value-axis-item>
@@ -54,33 +75,13 @@
     </kendo-chart-category-axis-item>
   </kendo-chart-category-axis>
   <kendo-chart-series>
-    <kendo-chart-series-item type="line" [data]="winLossData" [labels]="seriesLabels">
+    <kendo-chart-series-item *ngFor="let strategy of selectedStrategyIds" type="line" [data]="getWinLossDataByStrategyId(strategy)" [labels]="seriesLabels" [name]="getStrategyNameById(strategy)" >
       <kendo-chart-series-item-tooltip format="${0}">
       </kendo-chart-series-item-tooltip>
     </kendo-chart-series-item>
+    <kendo-chart-series-item-labels format="C0" position="bottom" [margin]="-25">
+    </kendo-chart-series-item-labels>
   </kendo-chart-series>
 </kendo-chart>
 <div style="white-space: pre-wrap;" [ngStyle]="{'color': s.color }" *ngFor="let s of output.slice().reverse()">{{ s.text }}</div>
 
-<!-- <kendo-chart style="width: 300px; height: 200px; background-color: blue;">
-  <kendo-chart-series>
-    <kendo-chart-series-item [data]="seriesData" type="column"> </kendo-chart-series-item>
-  </kendo-chart-series>
-</kendo-chart>
-<kendo-grid [data]="gridData">
-  <kendo-grid-column field="ProductID" title="ID"> </kendo-grid-column>
-  <kendo-grid-column field="ProductName" title="Name"> </kendo-grid-column>
-  <kendo-grid-column field="Category.CategoryName" title="Category"></kendo-grid-column>
-  <kendo-grid-column field="UnitPrice" title="Price"> </kendo-grid-column>
-</kendo-grid> -->
-
-<!-- <kendo-chart>
-  <kendo-chart-tooltip> </kendo-chart-tooltip>
-  <kendo-chart-series>
-    <kendo-chart-series-item [data]="[1, 2, 3]"> </kendo-chart-series-item>
-    <kendo-chart-series-item [data]="[1, 2, 3]">
-      <kendo-chart-series-item-tooltip background="green">
-      </kendo-chart-series-item-tooltip>
-    </kendo-chart-series-item>
-  </kendo-chart-series>
-</kendo-chart> -->

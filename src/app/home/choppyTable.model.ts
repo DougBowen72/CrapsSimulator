@@ -51,23 +51,26 @@ export class ChoppyTable {
     }
 
     
-    public async runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void, incrementProgress: () => void) : Promise<number[]> {
+    public runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void, incrementProgress: () => void, diceRolls : number[]) : number[] {
         output({text: 'Starting simulation for choppy table strategy...', color: 'black'});
 
         let isComeout: boolean = true;
         let maxDontComeBets: number = 2;
         let maxComeBets: number = 2;
         let winsAndLosses: number[] = [];
-    
+        let rollDice: boolean = diceRolls.length < 1;
+
         this._bettingUnit = bettingUnit;
         this._output = output;
+
+        let rollCount: number = -1;
 
         for (let i: number = 0; i < shooters; i++)
         {
             incrementProgress();
             
             // Allows the page to refresh with the status bar and output
-            await Common.sleep(1);
+            //await Common.sleep(1);
 
             let sevenOut: boolean = false;
             let point: number = 0;
@@ -105,7 +108,17 @@ export class ChoppyTable {
 
                 if (isComeout) { output({text: `Coming out...`, color: 'black'}); }
                 //output({text: 'Rolling...', color: 'black'});
-                let dice = Common.rollDice();
+                let dice: number;
+                rollCount++;
+
+                if (rollDice) {
+                    dice = Common.rollDice();
+                    diceRolls.push(dice);
+                }
+                else {
+                    dice = diceRolls[rollCount];
+                }
+
                 output({text: `${dice} rolled`, color: 'black'});
 
                 switch (dice) {

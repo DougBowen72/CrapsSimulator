@@ -36,7 +36,7 @@ export class ThreePointBlender {
         }
     }
 
-    public async runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void, incrementProgress: () => void) : Promise<number[]> {
+    public runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void, incrementProgress: () => void, diceRolls : number[]) : number[] {
         output({text: 'Starting simulation for 3 Point Blender strategy...', color: 'black'});
 
         let isComeout: boolean = true;
@@ -44,6 +44,7 @@ export class ThreePointBlender {
         let amountOnDontCome: number = 0;
         let bankrollPreviousShooter: number = 0;
         // let dontComePointHit: boolean = false;
+        let rollDice: boolean = diceRolls.length < 1;
 
         this._output = output;
 
@@ -61,12 +62,14 @@ export class ThreePointBlender {
             place6or8Amount = (mult + 1) * 6;
         }
         
+        let rollCount: number = -1;
+
         for (let i: number = 0; i < shooters; i++)
         {
             incrementProgress();
             
             // Allows the page to refresh with the status bar and output
-            await Common.sleep(1);
+            //await Common.sleep(1);
 
             let sevenOut: boolean = false;
             let point: number = 0;
@@ -106,7 +109,17 @@ export class ThreePointBlender {
                 // dontComePointHit = false;
 
                 if (isComeout) { output({text: `Coming out...`, color: 'black'}); }
-                let dice = Common.rollDice();
+                let dice: number;
+                rollCount++;
+
+                if (rollDice) {
+                    dice = Common.rollDice();
+                    diceRolls.push(dice);
+                }
+                else {
+                    dice = diceRolls[rollCount];
+                }
+
                 output({text: `${dice} rolled`, color: 'black'});
 
                 switch (dice) {

@@ -27,19 +27,22 @@ export class IronCross {
         }
     }
 
-    public async runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void, incrementProgress: () => void) : Promise<number[]> {
+    public runSimulation(bettingUnit: number, shooters: number, output: (s: {text:string, color:string}) => void, incrementProgress: () => void, diceRolls : number[]) : number[] {
         output({text: 'Starting simulation for the Iron Cross strategy...', color: 'black'});
 
         let isComeout: boolean = true;
-        let winsAndLosses: number[] = [0];
+        let winsAndLosses: number[] = [];
         //this._output = output;
+        let rollDice: boolean = diceRolls.length < 1;
+
+        let rollCount: number = -1;
 
         for (let i: number = 0; i < shooters; i++)
         {
             incrementProgress();
             
             // Allows the page to refresh with the status bar and output
-            await Common.sleep(1);
+            //await Common.sleep(1);
 
             let sevenOut: boolean = false;
             let point: number = 0;
@@ -93,7 +96,17 @@ export class IronCross {
                 // Roll the dice
                 if (isComeout) { output({text: `Coming out...`, color: 'black'}); }
                 //output({text: 'Rolling...', color: 'black'});
-                let dice = Common.rollDice();
+                let dice: number;
+                rollCount++;
+
+                if (rollDice) {
+                    dice = Common.rollDice();
+                    diceRolls.push(dice);
+                }
+                else {
+                    dice = diceRolls[rollCount];
+                }
+
                 output({text: `${dice} rolled`, color: 'black'});
                 let placeBetPayout: number = (this._amountOn6 / 6) * 7; // With different amounts on the 5 and the 6/7 the payout is the same.
 

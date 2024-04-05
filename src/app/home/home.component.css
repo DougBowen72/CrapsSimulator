@@ -7,3 +7,8 @@
     color: blue;
     font-size: 25em;
 }
+
+/* Wrap the strategy description text */
+.k-treeview *, .k-treeview *::before, .k-treeview *::after {
+    white-space: normal;
+}

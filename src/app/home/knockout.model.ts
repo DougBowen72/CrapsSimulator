@@ -27,7 +27,7 @@ export class Knockout {
         }
     }
 
-    public async runSimulation(bettingUnit: number, shooters: number, oddsMultiple: number, output: (s: {text:string, color:string}) => void, incrementProgress: () => void) : Promise<number[]> {
+    public runSimulation(bettingUnit: number, shooters: number, oddsMultiple: number, output: (s: {text:string, color:string}) => void, incrementProgress: () => void, diceRolls : number[]) : number[] {
         output({text: 'Starting simulation for Knockout strategy...', color: 'black'});
 
         let isComeout: boolean = true;
@@ -39,13 +39,16 @@ export class Knockout {
         let oddsBet5And9: number = amountOnPassLineOdds % 2 === 0 ? oddsBet : oddsBet + 1; // When the point is 5 or 9 the odds bet must be even as it pays 3:2
         let dice: number = 0;
         let winsAndLosses: number[] = [];
+        let rollDice: boolean = diceRolls.length < 1;
+
+        let rollCount: number = -1;
 
         for (let i: number = 0; i < shooters; i++)
         {
             incrementProgress();
             
             // Allows the page to refresh with the status bar and output
-            await Common.sleep(1);
+            //await Common.sleep(1);
 
             let sevenOut: boolean = false;
             let point: number = 0;
@@ -78,7 +81,17 @@ export class Knockout {
                 // Roll the dice
                 if (isComeout) { output({text: `Coming out...`, color: 'black'}); }
                 //output({text: 'Rolling...', color: 'black'});
-                dice = Common.rollDice();
+                let dice: number;
+                rollCount++;
+
+                if (rollDice) {
+                    dice = Common.rollDice();
+                    diceRolls.push(dice);
+                }
+                else {
+                    dice = diceRolls[rollCount];
+                }
+
                 output({text: `${dice} rolled`, color: 'black'});
 
                 switch (dice) {
