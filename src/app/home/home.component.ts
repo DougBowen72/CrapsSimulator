@@ -36,7 +36,7 @@ export class HomeComponent {
 
   public strategies: IStrategy[];
   public error: string = '';
-  public shooters: number = 0;
+  public shooters: number = 10;
   public selectedStrategyIds: number[] = [];
   public bettingUnit: number = 10;
   public output: {text: string, color: string}[] = [];
