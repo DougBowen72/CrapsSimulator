@@ -84,4 +84,5 @@
   </kendo-chart-series>
 </kendo-chart>
 <div style="white-space: pre-wrap;" [ngStyle]="{'color': s.color }" *ngFor="let s of output.slice().reverse()">{{ s.text }}</div>
+<span *ngIf="output.length < 1 && winLossData.length > 0">Individual dice rolls are not displayed for more than 100 shooters or multiple strategies</span>
 

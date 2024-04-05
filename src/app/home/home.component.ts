@@ -219,7 +219,7 @@ export class HomeComponent {
 
     let output = (s: {text: string, color: string}) => {
       // If there are more than 100 shooters we're not going to be looking at the individual rolls so don't bother logging them because it slows the process down.
-      if (this.shooters <= 100 && this.selectedStrategyIds.length < 3) {
+      if (this.shooters <= 100 && this.selectedStrategyIds.length < 2) {
         this.output.push({text: s.text, color: s.color});
       }
       
@@ -236,13 +236,13 @@ export class HomeComponent {
             let coldTable: ColdTable = new ColdTable();
             let ct = (coldTable.runSimulation(this.bettingUnit, this.shooters, this.maxDontComeBets, output, incrementProgress, this._diceRolls)).map(data => ({id: strat, value: data}));
             this.winLossData = this.winLossData.concat(ct);
-            console.log(`Completed strategy id 1, winLossData length: ${this.winLossData.length}`);
+            //console.log(`Completed strategy id 1, winLossData length: ${this.winLossData.length}`);
             break;
         case 2:
             let sixAndEight: SixAndEight = new SixAndEight();
             let se = (sixAndEight.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress, this._diceRolls)).map(data => ({id: strat, value: data}));
             this.winLossData = this.winLossData.concat(se);
-            console.log(`Completed strategy id 2, winLossData length: ${this.winLossData.length}`);
+            //console.log(`Completed strategy id 2, winLossData length: ${this.winLossData.length}`);
             break;
         case 3:
             let passLineOnly: PassLineOnly = new PassLineOnly();
