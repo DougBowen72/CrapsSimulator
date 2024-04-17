@@ -133,12 +133,17 @@ export class HomeComponent {
         id: 14,
         name: 'Pass line and come bets without odds, double betting unit',
         description: [{ text: `Pass line and come bets with no odds using double the betting unit`}]
+      },
+      {
+        id: 15,
+        name: 'Pass line with odds, no come bets',
+        description: [{ text: `Pass line with odds with no come bets`}]
       }
     ];
   }
 
     public showOddsMultiple() : boolean {
-    return this.selectedStrategyIds.find(s => s == 3 || s == 7 || s == 8) != undefined;
+    return this.selectedStrategyIds.find(s => s == 3 || s == 7 || s == 8 || s == 15) != undefined;
   }
 
   public showNumberOfComeBets() : boolean {
@@ -310,8 +315,13 @@ export class HomeComponent {
           let dpno = (doublePassLineNoOdds.runSimulation(this.bettingUnit * 2, this.shooters, 0, this.maxComeBets, output, incrementProgress, this._diceRolls));//.map(data => ({name: strat, value: data}));
           this.winLossData.push({name: name, value: dpno});
           break;
+        case 15:
+          let PassLineOddsNoCome: PassLineOnly = new PassLineOnly();
+          let plonc = (PassLineOddsNoCome.runSimulation(this.bettingUnit, this.shooters, this.oddsMultiple, 0, output, incrementProgress, this._diceRolls));//.map(data => ({name: strat, value: data}));
+          this.winLossData.push({name: name, value: plonc});
+          break;
         default:
-            this.error = 'Strategy not implemented';
+          this.error = 'Strategy not implemented';
       }
 
       // Add a starting point for each selected strategy
