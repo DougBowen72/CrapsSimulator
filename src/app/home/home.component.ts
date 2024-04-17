@@ -24,12 +24,12 @@ import { TreeViewModule, CheckableSettings, CheckMode, TreeItemLookup } from '@p
 import { groupBy, GroupResult } from '@progress/kendo-data-query';
 
 @Component({
-  selector: 'craps-home',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ChartModule, GridModule, ProgressBarModule, TreeViewModule],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css',
-  encapsulation: ViewEncapsulation.None
+    selector: 'craps-home',
+    standalone: true,
+    templateUrl: './home.component.html',
+    styleUrl: './home.component.css',
+    encapsulation: ViewEncapsulation.None,
+    imports: [CommonModule, FormsModule, ChartModule, GridModule, ProgressBarModule, TreeViewModule]
 })
 
 export class HomeComponent {
@@ -44,7 +44,7 @@ export class HomeComponent {
   public oddsMultiple: number = 1;
   public maxComeBets: number = 3;
   public maxDontComeBets: number = 2;
-  public winLossData: { id: number, value: number }[] = [];
+  public winLossData: { name: string, value: number[] }[] = [];
   public progressValue: number = 0;
   private _diceRolls: number[] = [];
   public strat: IStrategy =       {
@@ -76,7 +76,7 @@ export class HomeComponent {
       },
       {
         id: 3,
-        name: 'Pass line',
+        name: 'Pass line with odds and come',
         description: [{ text: `Pass line and come bets with an odds multiple`}]
       },
       {
@@ -123,16 +123,18 @@ export class HomeComponent {
         id: 12,
         name: 'Feed the 5 and 9',
         description: [{ text: `Place the 6 and 8 (not working on come out), when 6 hits put winnings on 5, when 8 hits put winnings on 9, when 5 or 9 hit, collect.`}]
+      },
+      {
+        id: 13,
+        name: 'Pass line and come bets without odds',
+        description: [{ text: `Pass line and come bets with no odds`}]
+      },
+      {
+        id: 14,
+        name: 'Pass line and come bets without odds, double betting unit',
+        description: [{ text: `Pass line and come bets with no odds using double the betting unit`}]
       }
     ];
-
-    // this.strategies = [
-    //   {
-    //     id: 1,
-    //     name: 'Cold Table',
-    //     description: [{ text: `Max 4 units per shooter, don't pass, come, come, don't come, don't come (if enough units, up to max don't come bets). Once you go dark stay dark. If any don't come bets are in place, no more come bets.`}]
-    //   }
-    // ]
   }
 
     public showOddsMultiple() : boolean {
@@ -140,21 +142,21 @@ export class HomeComponent {
   }
 
   public showNumberOfComeBets() : boolean {
-    return this.selectedStrategyIds.find(s => s == 3) != undefined;
+    return this.selectedStrategyIds.find(s => s == 3 || s == 13 || s == 14) != undefined;
   }
 
   public showNumberOfDontComeBets() : boolean {
     return this.selectedStrategyIds.find(s => s == 1 || s == 4) != undefined;
   }
 
-  public getWinLossDataByStrategyId(id: number) {
-    //console.log(`getWinLossDataByStrategyId for id ${id}`);
+  // public getWinLossDataByStrategyId(id: number) {
+  //   //console.log(`getWinLossDataByStrategyId for id ${id}`);
     
-    let d = this.winLossData.filter(data => data.id === id);//.map(d => d.value);
-    return d;
-  }
+  //   let d = this.winLossData.filter(data => data.id === id);//.map(d => d.value);
+  //   return d;
+  // }
 
-  public groupedData = groupBy(this.winLossData, [{ field: 'id' }]) as GroupResult[];
+  //public groupedData = groupBy(this.winLossData, [{ field: 'id' }]) as GroupResult[];
 
   public hasCheckbox = (item: any, index: string): boolean => {
     // Removes the checkboxes of all child level items
@@ -186,15 +188,16 @@ export class HomeComponent {
   //   }
   // }
 
-  public getStrategyNameById(id: number) : string {
-    //console.log(`Calling getStrategyNameById()`);
-    return this.strategies.filter(s => s.id == id)[0].name;
-  }
+  // public getStrategyNameById(id: number) : string {
+  //   console.log(`Calling getStrategyNameById(${id})`);
+  //   let n = this.strategies.filter(s => s.id == id)[0].name;
+  //   return n;
+  // }
 
-  public resetValues() {
-    this.winLossData.length = 0;
-    this.output.length = 0;
-  }
+  // public resetValues() {
+  //   this.winLossData.length = 0;
+  //   this.output.length = 0;
+  // }
 
   public async runStrategy() {
     if (this.shooters < 1 || this.selectedStrategyIds.length < 1 || this.bettingUnit < 1) {
@@ -231,75 +234,90 @@ export class HomeComponent {
     }
 
     this.selectedStrategyIds.forEach(async strat => {
+      let name = this.strategies.find(s => s.id == strat)?.name;
+      name = name == undefined ? '' : name; // It won't be undefined but need to satisfy the compiler
+
       switch (strat) {
         case 1:
             let coldTable: ColdTable = new ColdTable();
-            let ct = (coldTable.runSimulation(this.bettingUnit, this.shooters, this.maxDontComeBets, output, incrementProgress, this._diceRolls)).map(data => ({id: strat, value: data}));
-            this.winLossData = this.winLossData.concat(ct);
+            let ct = (coldTable.runSimulation(this.bettingUnit, this.shooters, this.maxDontComeBets, output, incrementProgress, this._diceRolls));//.map(data => ({id: strat, value: data}));
+            this.winLossData.push({name: name, value: ct});
             //console.log(`Completed strategy id 1, winLossData length: ${this.winLossData.length}`);
             break;
         case 2:
             let sixAndEight: SixAndEight = new SixAndEight();
-            let se = (sixAndEight.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress, this._diceRolls)).map(data => ({id: strat, value: data}));
-            this.winLossData = this.winLossData.concat(se);
+            let se = (sixAndEight.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress, this._diceRolls));//.map(data => ({name: strat, value: data}));
+            this.winLossData.push({name: name, value: se});
             //console.log(`Completed strategy id 2, winLossData length: ${this.winLossData.length}`);
             break;
         case 3:
             let passLineOnly: PassLineOnly = new PassLineOnly();
-            let p = (passLineOnly.runSimulation(this.bettingUnit, this.shooters, this.oddsMultiple, this.maxComeBets, output, incrementProgress, this._diceRolls)).map(data => ({id: strat, value: data}));
-            this.winLossData = this.winLossData.concat(p);
+            let p = (passLineOnly.runSimulation(this.bettingUnit, this.shooters, this.oddsMultiple, this.maxComeBets, output, incrementProgress, this._diceRolls));//.map(data => ({name: strat, value: data}));
+            this.winLossData.push({name: name, value: p});
             break;
         case 4:
             let modifiedColdTable: ModifiedColdTable = new ModifiedColdTable();
-            let mct = (modifiedColdTable.runSimulation(this.bettingUnit, this.shooters, this.maxDontComeBets, output, incrementProgress, this._diceRolls)).map(data => ({id: strat, value: data}));
-            this.winLossData = this.winLossData.concat(mct);
+            let mct = (modifiedColdTable.runSimulation(this.bettingUnit, this.shooters, this.maxDontComeBets, output, incrementProgress, this._diceRolls));//.map(data => ({name: strat, value: data}));
+            this.winLossData.push({name: name, value: mct});
             break;
         case 5:
             let sixAndEightOnly: SixAndEightOnly = new SixAndEightOnly();
-            let seo = (sixAndEightOnly.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress, this._diceRolls)).map(data => ({id: strat, value: data}));
-            this.winLossData = this.winLossData.concat(seo);
+            let seo = (sixAndEightOnly.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress, this._diceRolls));//.map(data => ({name: strat, value: data}));
+            this.winLossData.push({name: name, value: seo});
             break;
         case 6:
             let ironCross: IronCross = new IronCross();
-            let ic = (ironCross.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress, this._diceRolls)).map(data => ({id: strat, value: data}));
-            this.winLossData = this.winLossData.concat(ic);
+            let ic = (ironCross.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress, this._diceRolls));//.map(data => ({name: strat, value: data}));
+            this.winLossData.push({name: name, value: ic});
             break;
         case 7:
             let knockout: Knockout = new Knockout();
-            let k = (knockout.runSimulation(this.bettingUnit, this.shooters, this.oddsMultiple, output, incrementProgress, this._diceRolls)).map(data => ({id: strat, value: data}));
-            this.winLossData = this.winLossData.concat(k);
+            let k = (knockout.runSimulation(this.bettingUnit, this.shooters, this.oddsMultiple, output, incrementProgress, this._diceRolls));//.map(data => ({name: strat, value: data}));
+            this.winLossData.push({name: name, value: k});
             break;
         case 8:
             let passWith6And8: PassLineWithSixAndEight = new PassLineWithSixAndEight();
-            let pse = (passWith6And8.runSimulation(this.bettingUnit, this.shooters, this.oddsMultiple, output, incrementProgress, this._diceRolls)).map(data => ({id: strat, value: data}));
-            this.winLossData = this.winLossData.concat(pse);
+            let pse = (passWith6And8.runSimulation(this.bettingUnit, this.shooters, this.oddsMultiple, output, incrementProgress, this._diceRolls));//.map(data => ({name: strat, value: data}));
+            this.winLossData.push({name: name, value: pse});
             break;
         case 9:
             let choppy: ChoppyTable = new ChoppyTable();
-            let ch = (choppy.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress, this._diceRolls)).map(data => ({id: strat, value: data}));
-            this.winLossData = this.winLossData.concat(ch);
+            let ch = (choppy.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress, this._diceRolls));//.map(data => ({name: strat, value: data}));
+            this.winLossData.push({name: name, value: ch});
             break;
         case 10:
             let blender: ThreePointBlender = new ThreePointBlender();
-            let b = (blender.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress, this._diceRolls)).map(data => ({id: strat, value: data}));
-            this.winLossData = this.winLossData.concat(b);
+            let b = (blender.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress, this._diceRolls));//.map(data => ({name: strat, value: data}));
+            this.winLossData.push({name: name, value: b});
             break;
         case 11:
             let feed: Feed6And8 = new Feed6And8();
-            let fse = (feed.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress, this._diceRolls)).map(data => ({id: strat, value: data}));
-            this.winLossData = this.winLossData.concat(fse);
+            let fse = (feed.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress, this._diceRolls));//.map(data => ({name: strat, value: data}));
+            this.winLossData.push({name: name, value: fse});
             break;
         case 12:
             let feed5And9: Feed5And9 = new Feed5And9();
-            let ffn = (feed5And9.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress, this._diceRolls)).map(data => ({id: strat, value: data}));
-            this.winLossData = this.winLossData.concat(ffn);
+            let ffn = (feed5And9.runSimulation(this.bettingUnit, this.shooters, output, incrementProgress, this._diceRolls));//.map(data => ({name: strat, value: data}));
+            this.winLossData.push({name: name, value: ffn});
             break;
-          default:
-          this.error = 'Strategy not implemented';
+        case 13:
+          let passLineNoOdds: PassLineOnly = new PassLineOnly();
+          let pno = (passLineNoOdds.runSimulation(this.bettingUnit, this.shooters, 0, this.maxComeBets, output, incrementProgress, this._diceRolls));//.map(data => ({name: strat, value: data}));
+          this.winLossData.push({name: name, value: pno});
+          break;
+        case 14:
+          let doublePassLineNoOdds: PassLineOnly = new PassLineOnly();
+          let dpno = (doublePassLineNoOdds.runSimulation(this.bettingUnit * 2, this.shooters, 0, this.maxComeBets, output, incrementProgress, this._diceRolls));//.map(data => ({name: strat, value: data}));
+          this.winLossData.push({name: name, value: dpno});
+          break;
+        default:
+            this.error = 'Strategy not implemented';
       }
 
       // Add a starting point for each selected strategy
-      this.winLossData.splice(0, 0, { id: strat, value: 0 });
+      this.winLossData[this.winLossData.length - 1].value.splice(0, 0, 0);
+      
+      //this.winLossData.splice(0, 0, value.splice(0, 0, [0]) });
     });
     
     this.isRunning = false;

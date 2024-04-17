@@ -75,7 +75,7 @@
     </kendo-chart-category-axis-item>
   </kendo-chart-category-axis>
   <kendo-chart-series>
-    <kendo-chart-series-item *ngFor="let strategy of selectedStrategyIds" type="line" [data]="getWinLossDataByStrategyId(strategy)" [labels]="seriesLabels" [name]="getStrategyNameById(strategy)" >
+    <kendo-chart-series-item *ngFor="let item of winLossData" type="line" [data]="item.value" [labels]="seriesLabels" [name]="item.name" >
       <kendo-chart-series-item-tooltip format="${0}">
       </kendo-chart-series-item-tooltip>
     </kendo-chart-series-item>
@@ -85,4 +85,3 @@
 </kendo-chart>
 <div style="white-space: pre-wrap;" [ngStyle]="{'color': s.color }" *ngFor="let s of output.slice().reverse()">{{ s.text }}</div>
 <span *ngIf="output.length < 1 && winLossData.length > 0">Individual dice rolls are not displayed for more than 100 shooters or multiple strategies</span>
-
